@@ -1,0 +1,40 @@
+<div {{ attributes }}>
+    <h2>Componente</h2>
+    <div class="row">
+        <div class="col-1">Id</div>
+        <div class="col-5">Texto</div>
+        <div class="col-1">Activa</div>
+        <div class="col-1">Respuestas</div>
+        <div class="col-4">Acciones</div>
+    </div>
+    {% for question in this.all %}
+        <div class="row">
+            <div class="col-1">{{ question.id }}</div>
+            <div class="col-5">{{ question.text }}</div>
+            <div class="col-1">{{ question.active }}</div>
+            <div class="col-1">{{ question.answers|length }}</div>
+            <div class="col-2"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ tagPrefix ~ modalId }}Modal" {{ live_action('edit', {'id': question.id}) }}>Editar</button></div>
+            <div class="col-2"><button class="btn btn-danger" {{ live_action('delete', {'id': question.id})}}>Borrar</button></div>
+        </div>
+    {% endfor %}
+    <p>Registros: {{ this.all|length }}</p>
+    {# Botón para crear un nuevo registro #}
+    <button class="px-4 py-2 text-white btn btn-primary rounded" data-bs-toggle="modal" data-bs-target="#{{ tagPrefix ~ modalId }}Modal" {{ live_action("openModal") }}>Create {{ itemName }}</button>
+
+    {{ form_start(form, {
+    attr: {
+    'data-action': 'live#action:prevent',
+    'data-live-action-param': 'save'
+    }
+    }) }}
+    <twig:ModalComponent modalId="{{ modalId }}" button="0" modalTitle="{{ this.id ? 'Edit ' : 'Create ' ~ itemName }}" modalSize="modal-lg" tagPrefix="{{ tagPrefix }}">
+            {{ form_row(form.text) }}
+            {{ form_row(form.active) }}
+
+        <twig:block name="footer">
+            {{ parent() }}
+        </twig:block>
+    </twig:ModalComponent>
+    {{ form_end(form) }}
+
+</div>
