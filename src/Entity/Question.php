@@ -12,7 +12,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Table(name: 'questions')]
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
-#[UniqueEntity(fields: 'text', message: 'Ya hay una pregunta con ese texto')]class Question
+#[UniqueEntity(fields: 'text', message: 'Ya hay una pregunta con ese texto')]
+class Question
 {
     use ActivableEntityTrait;
 
@@ -22,7 +23,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: false)]
-    private ?string $text = null;
+    private string $text = "";
 
     /**
      * @var Collection<int, Answer>
