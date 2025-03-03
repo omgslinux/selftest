@@ -10,11 +10,11 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250216191836 extends AbstractMigration
+final class Version20250226131819 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Create questions and answers tables';
+        return '';
     }
 
     public function up(Schema $schema): void
@@ -22,7 +22,7 @@ final class Version20250216191836 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE answers (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, question_id INTEGER NOT NULL, text VARCHAR(255) NOT NULL, valid BOOLEAN DEFAULT NULL, active BOOLEAN DEFAULT NULL, CONSTRAINT FK_50D0C6061E27F6BF FOREIGN KEY (question_id) REFERENCES questions (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('CREATE INDEX IDX_50D0C6061E27F6BF ON answers (question_id)');
-        $this->addSql('CREATE TABLE questions (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, text VARCHAR(255) NOT NULL, active BOOLEAN DEFAULT NULL)');
+        $this->addSql('CREATE TABLE questions (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, text VARCHAR(255) NOT NULL, is_active BOOLEAN NOT NULL)');
         $this->addSql('CREATE TABLE messenger_messages (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, body CLOB NOT NULL, headers CLOB NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL --(DC2Type:datetime_immutable)
         , available_at DATETIME NOT NULL --(DC2Type:datetime_immutable)
         , delivered_at DATETIME DEFAULT NULL --(DC2Type:datetime_immutable)

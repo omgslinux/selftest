@@ -16,12 +16,6 @@ final class ModalComponent
     public int $button = 0;
     public ?string $liveAction = null;
 
-
-
-    public function mount()
-    {
-    }
-
     public function getId2(): string
     {
         return $this->tagPrefix . $this->modalId . "Modal";

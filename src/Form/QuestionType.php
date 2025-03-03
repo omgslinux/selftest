@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Question;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -13,10 +14,13 @@ class QuestionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('text', null, [
-                'required' => true,
-            ])
-            ->add('active')
+            ->add('text')
+            ->add('active',
+                CheckboxType::class,
+                [
+                //    'required' => false
+                ]
+            )
             ->add('answers', CollectionType::class, [
                 'entry_type' => AnswerType::class,
                 'allow_add' => true,

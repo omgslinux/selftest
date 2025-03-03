@@ -3,20 +3,25 @@
 namespace App\Entity;
 
 use App\Repository\QuestionRepository;
+use App\Entity\Traits\ActivableEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Table(name: 'questions')]
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
-class Question
+#[UniqueEntity(fields: 'text', message: 'Ya hay una pregunta con ese texto')]class Question
 {
+    use ActivableEntityTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: false)]
     private ?string $text = null;
 
     /**
@@ -24,9 +29,6 @@ class Question
      */
     #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question')]
     private Collection $answers;
-
-    #[ORM\Column(nullable: true)]
-    private ?bool $active = null;
 
     public function __construct()
     {
@@ -76,18 +78,6 @@ class Question
                 $answer->setQuestion(null);
             }
         }
-
-        return $this;
-    }
-
-    public function isActive(): ?bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(?bool $active): static
-    {
-        $this->active = $active;
 
         return $this;
     }
