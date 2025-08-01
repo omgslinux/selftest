@@ -18,11 +18,12 @@ class QuestionType extends AbstractType
             ->add('active',
                 CheckboxType::class,
                 [
-                //    'required' => false
+                    'required' => false
                 ]
             )
             ->add('answers', CollectionType::class, [
                 'entry_type' => AnswerType::class,
+                'entry_options' => ['label' => false],
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false, // Necesario para persistir correctamente en una relación OneToMany

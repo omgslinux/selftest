@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Question index{% endblock %}
+
+{% block body %}
+    <h1>Question index</h1>
+
+    {#<twig:QuestionComponent tagPrefix="{{ tagPrefix }}" modalId="{{ modalId }}" />#}
+    <twig:QuestionCrudComponent  />
+
+{% endblock %}

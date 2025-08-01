@@ -1,4 +1,20 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    <div class="row">
+        <div class="col-1">{{ form_label(form.text)}}</div>
+        <div class="col-7">{{ form_widget(form.text)}}</div>
+    </div>
+    <div class="row">{{ form_row(form.active)}}</div>
+    <h3>Answers</h3>
+<div data-controller='form-collection'
+    data-form-collection-index-value="{{ form.answers|length > 0 ? form.answers|last.vars.name + 1 : 0 }}"
+    data-form-collection-prototype-value="{{ include('question/answer_prototype.html.twig', { 'row': form.answers.vars.prototype })|e('html_attr') }}"
+>
+    <ul {{ stimulus_target('form-collection', 'collectionContainer') }}>
+        {% for item in form.answers -%}
+            {{ include('question/answer_prototype.html.twig', { 'row': item }) }}
+        {%- endfor %}
+    </ul>
+    {# <button type="button" {{ stimulus_action('form-collection', 'addCollectionElement') }}>Add a tag</button> #}
+    <button type="button" class="btn btn-primary" data-action="form-collection#addCollectionElement">Add an answer</button>
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Task{% endblock %}
+{# templates/task/new.html.twig #}
+
+{# ... #}
+{% block body %}
+{# templates/task/new.html.twig #}
+
+{# ... #}
+
+{{ form_start(form) }}
+    {{ form_row(form.description) }}
+
+    <h3>Tags</h3>
+{# the data-index attribute is required for the JavaScript code below #}
+<ul class="tags"
+    data-index="{{ form.tags|length > 0 ? form.tags|last.vars.name + 1 : 0 }}"
+    data-prototype="{{ form_widget(form.tags.vars.prototype)|e('html_attr') }}"
+>        {% for tag in form.tags %}
+            <li>{{ form_row(tag.name) }}</li>
+        {% endfor %}
+    </ul>
+    <button type="button" class="add_item_link" data-collection-holder-class="tags">Add a tag</button>
+{{ form_end(form) }}
+
+{# ... #}
+<script>
+
+document
+    .querySelectorAll('ul.tags li')
+    .forEach((tag) => {
+        addTagFormDeleteLink(tag)
+    })
+
+document
+  .querySelectorAll('.add_item_link')
+  .forEach(btn => {
+      btn.addEventListener("click", addFormToCollection)
+  });
+
+function addFormToCollection(e) {
+  const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+  const item = document.createElement('li');
+
+  item.innerHTML = collectionHolder
+    .dataset
+    .prototype
+    .replace(
+      /__name__/g,
+      collectionHolder.dataset.index
+    );
+
+  collectionHolder.appendChild(item);
+
+  collectionHolder.dataset.index++;
+
+  // add a delete link to the new form
+  addTagFormDeleteLink(item);
+
+};
+
+function addTagFormDeleteLink(item) {
+    const removeFormButton = document.createElement('button');
+    removeFormButton.innerText = 'Delete this tag';
+    removeFormButton.classList.add('btn','btn-danger');
+
+    item.append(removeFormButton);
+
+    removeFormButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        // remove the li for the tag form
+        item.remove();
+    });
+}
+
+</script>
+{% endblock %}
