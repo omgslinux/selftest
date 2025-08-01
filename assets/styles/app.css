@@ -1,3 +1,26 @@
 body {
     background-color: skyblue;
 }
+
+.collection-items-container,
+.data-collection-item {
+    background: #f8f9fa;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #dee2e6;
+}
+
+.collection-items-labels {
+    margin-bottom: 10px;
+}
+
+.collection-items-actions {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+}
+
+.data-collection-item input {
+    width: 100%;
+}

@@ -30,7 +30,21 @@
     <button class="px-4 py-2 text-white btn btn-primary rounded" data-bs-toggle="modal" data-bs-target="#{{ tagPrefix ~ modalId }}Modal" {{ live_action("new") }}>Create {{ itemName }}</button>
 
     {% if isModalOpen %}
-    {{ form_start(form}}
+    {{ form_start(form, {
+    attr: {
+    'data-action': 'live#action:prevent',
+    'data-live-action-param': 'save'
+    }
+    }) }}
+    <twig:ModalComponent modalId="{{ modalId }}" button="0" modalTitle="{{ (this.id != null) ? 'Edit ' : 'Create ' ~ itemName }}" modalSize="modal-lg" tagPrefix="{{ tagPrefix }}">
+            {{ form_row(form.text) }}
+            {{ form_errors(form.text) }}
+            {{ form_row(form.active) }}
+
+        <twig:block name="footer">
+            {{ parent() }}
+        </twig:block>
+    </twig:ModalComponent>
     {{ form_end(form) }}
 
     {% endif %}

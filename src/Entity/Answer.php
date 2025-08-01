@@ -4,11 +4,14 @@ namespace App\Entity;
 
 use App\Repository\AnswerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\ActivableEntityTrait;
 
 #[ORM\Table(name: 'answers')]
 #[ORM\Entity(repositoryClass: AnswerRepository::class)]
 class Answer
 {
+    use ActivableEntityTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -23,9 +26,6 @@ class Answer
 
     #[ORM\Column(nullable: true)]
     private ?bool $valid = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?bool $active = null;
 
     public function getId(): ?int
     {
@@ -64,18 +64,6 @@ class Answer
     public function setValid(?bool $valid): static
     {
         $this->valid = $valid;
-
-        return $this;
-    }
-
-    public function isActive(): ?bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(?bool $active): static
-    {
-        $this->active = $active;
 
         return $this;
     }

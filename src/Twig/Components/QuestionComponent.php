@@ -21,7 +21,10 @@ class QuestionComponent extends AbstractController
     use DefaultActionTrait;
     use ComponentWithFormTrait;
 
-    #[LiveProp]
+    #[LiveProp(writable: true)]
+    public bool $isModalOpen = false;
+
+    #[LiveProp(writable: true)]
     public ?Question $id=null;
 
     #[LiveProp]
@@ -50,6 +53,7 @@ class QuestionComponent extends AbstractController
         $this->id = new Question();
         $this->id->setActive(false);
         $this->resetForm();
+        $this->isModalOpen = true;
     }
 
     #[LiveAction]
@@ -57,6 +61,7 @@ class QuestionComponent extends AbstractController
     {
         $this->id = $id;
         $this->resetForm();
+        $this->isModalOpen = true;
     }
 
     #[LiveListener('deleteConfirmed')]
@@ -84,7 +89,8 @@ class QuestionComponent extends AbstractController
             $this->addFlash('success', $this->itemName .' saved!');
 
             $this->resetForm();
-        }
 
+            $this->isModalOpen = false;
+        }
     }
 }

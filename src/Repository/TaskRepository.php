@@ -2,14 +2,14 @@
 
 namespace App\Repository;
 
-use App\Entity\Question as Entity;
+use App\Entity\Task as Entity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Question>
+ * @extends ServiceEntityRepository<Task>
  */
-class QuestionRepository extends ServiceEntityRepository
+class TaskRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -40,24 +40,24 @@ class QuestionRepository extends ServiceEntityRepository
     }
 
     //    /**
-    //     * @return Question[] Returns an array of Question objects
+    //     * @return Task[] Returns an array of Task objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('q')
-    //            ->andWhere('q.exampleField = :val')
+    //        return $this->createQueryBuilder('t')
+    //            ->andWhere('t.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('q.id', 'ASC')
+    //            ->orderBy('t.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Question
+    //    public function findOneBySomeField($value): ?Task
     //    {
-    //        return $this->createQueryBuilder('q')
-    //            ->andWhere('q.exampleField = :val')
+    //        return $this->createQueryBuilder('t')
+    //            ->andWhere('t.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

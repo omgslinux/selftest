@@ -28,7 +28,7 @@ class Question
     /**
      * @var Collection<int, Answer>
      */
-    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question')]
+    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', cascade: ["persist"])]
     private Collection $answers;
 
     public function __construct()
