@@ -7,29 +7,42 @@
         {% block stylesheets %}
         {% endblock %}
 
+    </head>
+    <body>
+        <header class="nav bg-info mb-3 flex-align-center">
+        {# Start left side #}
+        {% set liclass = "nav-item" %}{% set aclass = "nav-link" %}
+            {{ include('_header_left.html.twig') }}
+        {# End left side #}
+        {# Start right side #}
+            {{ include('_header_right.html.twig') }}
+        {# End right side #}
+
+        </header>
+
+        <main>
+            <div data-controller="modal-loader" class="d-flex justify-between">
+                <div class="container">
+                {{ include('_flash.html.twig') }}
+                    {% block body %}{% endblock %}
+                </div>
+                <dialog data-modal-loader-target="dialog"
+                    class="shadow"
+                    data-action="close->modal-loader#close"
+                    >
+                    <!-- contenido AJAX -->
+                </dialog>
+            </div>
+        </main>
+
+
+        <footer>
+
+
+        </footer>
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
-    </head>
-    <body>
-        <div class="container">
-            {% block body %}{% endblock %}
-        </div>
-        <div
-            data-controller="modal"
-            data-action="turbo:before-cache@window->modal#close"
-        >
-            <dialog
-                class="open:flex bg-gray-800 rounded-lg shadow-xl inset-0 w-full md:w-fit md:max-w-[50%] md:min-w-[50%] animate-fade-in backdrop:bg-slate-600 backdrop:opacity-80"
-                data-modal-target="dialog"
-                data-action="close->modal#close click->modal#clickOutside"
-            >
-                <div class="d-flex flex-grow-1 p-5">
-                    <div class="flex-grow overflow-auto p-1">
-                        <turbo-frame id="modal" data-modal-target="dynamicContent"></turbo-frame>
-                    </div>
-                </div>
-            </dialog>
-        </div>
+
      </body>
 </html>
