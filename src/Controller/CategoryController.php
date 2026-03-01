@@ -14,6 +14,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/category', name: 'app_category_')]
 final class CategoryController extends AbstractController
 {
+    private const PREFIX = 'app_category_';
+
     #[Route(name: 'index', methods: ['GET'])]
     public function index(CategoryRepository $categoryRepository): Response
     {
@@ -33,7 +35,7 @@ final class CategoryController extends AbstractController
             $entityManager->persist($category);
             $entityManager->flush();
 
-            return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('category/new.html.twig', [
@@ -59,7 +61,7 @@ final class CategoryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('category/edit.html.twig', [
@@ -76,6 +78,6 @@ final class CategoryController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
     }
 }
