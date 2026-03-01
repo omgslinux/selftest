@@ -21,6 +21,7 @@ final class CategoryController extends AbstractController
     {
         return $this->render('category/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
+            'PREFIX' => self::PREFIX,
         ]);
     }
 
@@ -41,6 +42,7 @@ final class CategoryController extends AbstractController
         return $this->render('category/new.html.twig', [
             'category' => $category,
             'form' => $form,
+            'PREFIX' => self::PREFIX,
         ]);
     }
 
@@ -49,6 +51,7 @@ final class CategoryController extends AbstractController
     {
         return $this->render('category/show.html.twig', [
             'category' => $category,
+            'PREFIX' => self::PREFIX,
         ]);
     }
 
@@ -67,6 +70,7 @@ final class CategoryController extends AbstractController
         return $this->render('category/edit.html.twig', [
             'category' => $category,
             'form' => $form,
+            'PREFIX' => self::PREFIX,
         ]);
     }
 
