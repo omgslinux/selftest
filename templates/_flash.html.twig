@@ -1,0 +1,12 @@
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+{% if form is defined %}
+{% if form.vars.errors|length %}
+<div class="alert alert-danger">{{ form_errors(form) }}</div>
+{% endif %}
+{% endif %}
