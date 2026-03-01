@@ -15,11 +15,12 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CategoryController extends AbstractController
 {
     private const PREFIX = 'app_category_';
+    private const TDIR = 'category';
 
     #[Route(name: 'index', methods: ['GET'])]
     public function index(CategoryRepository $categoryRepository): Response
     {
-        return $this->render('category/index.html.twig', [
+        return $this->render(self::TDIR . '/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
             'PREFIX' => self::PREFIX,
         ]);
@@ -39,7 +40,7 @@ final class CategoryController extends AbstractController
             return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('category/new.html.twig', [
+        return $this->render(self::TDIR . '/new.html.twig', [
             'category' => $category,
             'form' => $form,
             'PREFIX' => self::PREFIX,
@@ -49,7 +50,7 @@ final class CategoryController extends AbstractController
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Category $category): Response
     {
-        return $this->render('category/show.html.twig', [
+        return $this->render(self::TDIR . '/show.html.twig', [
             'category' => $category,
             'PREFIX' => self::PREFIX,
         ]);
@@ -67,7 +68,7 @@ final class CategoryController extends AbstractController
             return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('category/edit.html.twig', [
+        return $this->render(self::TDIR . '/edit.html.twig', [
             'category' => $category,
             'form' => $form,
             'PREFIX' => self::PREFIX,
