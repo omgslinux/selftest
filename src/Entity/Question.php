@@ -31,9 +31,24 @@ class Question
     #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', cascade: ["persist"])]
     private Collection $answers;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Level $level = null;
+
+    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Topic $topic = null;
+
+    /**
+     * @var Collection<int, QuizTest>
+     */
+    #[ORM\OneToMany(targetEntity: QuizTest::class, mappedBy: 'question')]
+    private Collection $quizTests;
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
+        $this->quizTests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -77,6 +92,60 @@ class Question
             // set the owning side to null (unless already changed)
             if ($answer->getQuestion() === $this) {
                 $answer->setQuestion(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLevel(): ?Level
+    {
+        return $this->level;
+    }
+
+    public function setLevel(?Level $level): static
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    public function getTopic(): ?Topic
+    {
+        return $this->topic;
+    }
+
+    public function setTopic(?Topic $topic): static
+    {
+        $this->topic = $topic;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuizTest>
+     */
+    public function getQuizTests(): Collection
+    {
+        return $this->quizTests;
+    }
+
+    public function addQuizTest(QuizTest $quizTest): static
+    {
+        if (!$this->quizTests->contains($quizTest)) {
+            $this->quizTests->add($quizTest);
+            $quizTest->setQuestion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuizTest(QuizTest $quizTest): static
+    {
+        if ($this->quizTests->removeElement($quizTest)) {
+            // set the owning side to null (unless already changed)
+            if ($quizTest->getQuestion() === $this) {
+                $quizTest->setQuestion(null);
             }
         }
 

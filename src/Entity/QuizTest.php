@@ -2,37 +2,31 @@
 
 namespace App\Entity;
 
-use App\Repository\AnswerRepository;
+use App\Repository\QuizTestRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Traits\ActivableEntityTrait;
 
-#[ORM\Table(name: 'answers')]
-#[ORM\Entity(repositoryClass: AnswerRepository::class)]
-class Answer
+#[ORM\Entity(repositoryClass: QuizTestRepository::class)]
+class QuizTest
 {
-    use ActivableEntityTrait;
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $text = null;
+    #[ORM\ManyToOne(inversedBy: 'quizTests')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Quiz $quiz = null;
 
-    #[ORM\ManyToOne(inversedBy: 'answers')]
+    #[ORM\ManyToOne(inversedBy: 'quizTests')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Question $question = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?bool $valid = null;
 
     /**
      * @var Collection<int, QuizTestAnswers>
      */
-    #[ORM\OneToMany(targetEntity: QuizTestAnswers::class, mappedBy: 'answer')]
+    #[ORM\OneToMany(targetEntity: QuizTestAnswers::class, mappedBy: 'test')]
     private Collection $quizTestAnswers;
 
     public function __construct()
@@ -45,14 +39,14 @@ class Answer
         return $this->id;
     }
 
-    public function getText(): ?string
+    public function getQuiz(): ?Quiz
     {
-        return $this->text;
+        return $this->quiz;
     }
 
-    public function setText(string $text): static
+    public function setQuiz(?Quiz $quiz): static
     {
-        $this->text = $text;
+        $this->quiz = $quiz;
 
         return $this;
     }
@@ -69,18 +63,6 @@ class Answer
         return $this;
     }
 
-    public function isValid(): ?bool
-    {
-        return $this->valid;
-    }
-
-    public function setValid(?bool $valid): static
-    {
-        $this->valid = $valid;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, QuizTestAnswers>
      */
@@ -93,7 +75,7 @@ class Answer
     {
         if (!$this->quizTestAnswers->contains($quizTestAnswer)) {
             $this->quizTestAnswers->add($quizTestAnswer);
-            $quizTestAnswer->setAnswer($this);
+            $quizTestAnswer->setTest($this);
         }
 
         return $this;
@@ -103,8 +85,8 @@ class Answer
     {
         if ($this->quizTestAnswers->removeElement($quizTestAnswer)) {
             // set the owning side to null (unless already changed)
-            if ($quizTestAnswer->getAnswer() === $this) {
-                $quizTestAnswer->setAnswer(null);
+            if ($quizTestAnswer->getTest() === $this) {
+                $quizTestAnswer->setTest(null);
             }
         }
 
