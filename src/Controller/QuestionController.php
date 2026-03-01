@@ -14,7 +14,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/question', name: 'app_question_')]
 final class QuestionController extends AbstractController
 {
-    const PREFIX = 'app_question_';
+    private const PREFIX = 'app_question_';
+    private const TDIR = 'question';
 
     #[Route(name: 'index', methods: ['GET'])]
     public function index(REPO $repo): Response
@@ -24,7 +25,7 @@ final class QuestionController extends AbstractController
         ];
 
 
-        return $this->render('question/index.html.twig', [
+        return $this->render(self::TDIR . '/index.html.twig', [
             'questions' => $repo->findAll(),
             'targetPrefix' => 'questions',
             'PREFIX' => self::PREFIX,
@@ -35,7 +36,7 @@ final class QuestionController extends AbstractController
     #[Route('/turbo', name: 'indexTurbo', methods: ['GET'])]
     public function indexTurbo(REPO $questionRepository): Response
     {
-        return $this->render('question/index.html.twig', [
+        return $this->render(self::TDIR . '/index.html.twig', [
             //'questions' => $questionRepository->findAll(),
             'tagPrefix' => 'edit',
             'modalId' => 'questions'
@@ -56,20 +57,22 @@ final class QuestionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $repo->save($question, true);
 
-            return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('question/new.html.twig', [
+        return $this->render(self::TDIR . '/new.html.twig', [
             'question' => $question,
             'form' => $form,
+            'PREFIX' => self::PREFIX,
         ]);
     }
 
     #[Route('/{id}/show', name: 'show', methods: ['GET'])]
     public function show(Question $question): Response
     {
-        return $this->render('question/show.html.twig', [
+        return $this->render(self::TDIR . '/show.html.twig', [
             'question' => $question,
+            'PREFIX' => self::PREFIX,
         ]);
     }
 
@@ -89,9 +92,10 @@ final class QuestionController extends AbstractController
             return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('question/edit.html.twig', [
+        return $this->render(self::TDIR . '/edit.html.twig', [
             'question' => $question,
             'form' => $form,
+            'PREFIX' => self::PREFIX,
         ]);
     }
 

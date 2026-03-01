@@ -21,8 +21,8 @@
                 <td>{{ topic.name }}</td>
                 <td>{{ topic.description }}</td>
                 <td>
-                    <a href="{{ path('app_topic_show', {'id': topic.id}) }}">show</a>
-                    <a href="{{ path('app_topic_edit', {'id': topic.id}) }}">edit</a>
+                    <a href="{{ path(PREFIX ~ 'show', {'id': topic.id}) }}">show</a>
+                    <a href="{{ path(PREFIX ~ 'edit', {'id': topic.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -33,5 +33,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_topic_new') }}">Create new</a>
+    <a href="{{ path(PREFIX ~ 'new') }}">Create new</a>
 {% endblock %}
