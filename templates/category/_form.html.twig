@@ -1,4 +1,20 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<form class="ajax-form">
+    <div class="modal-header">
+        <h5 class="modal-title">{{ title|default('Category') }}</h5>
+        <button type="button" class="btn-close" data-action="click->modal-loader#close" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+    </div>
+    <div class="modal-footer">
+        {% if category is defined and category.id %}
+            <form action="{{ path(PREFIX ~ 'delete', {'id': category.id}) }}" method="POST" class="ajax-form me-auto">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres borrar esta categoría?')">Delete</button>
+            </form>
+        {% endif %}
+        <button type="button" class="btn btn-secondary" data-action="click->modal-loader#close">Cancel</button>
+        <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    </div>
+</form>

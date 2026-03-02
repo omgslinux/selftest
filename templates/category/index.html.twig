@@ -21,8 +21,7 @@
                 <td>{{ category.name }}</td>
                 <td>{{ category.description }}</td>
                 <td>
-                    <a href="{{ path(PREFIX ~ 'show', {'id': category.id}) }}">show</a>
-                    <a href="{{ path(PREFIX ~ 'edit', {'id': category.id}) }}">edit</a>
+                    <button type="button" class="btn btn-sm btn-primary" data-url="{{ path(PREFIX ~ 'edit', {'id': category.id}) }}" data-action="click->modal-loader#open">Edit</button>
                 </td>
             </tr>
         {% else %}
@@ -33,5 +32,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path(PREFIX ~ 'new') }}">Create new</a>
+    <button type="button" class="btn btn-primary" data-url="{{ path(PREFIX ~ 'new') }}" data-action="click->modal-loader#open">Create new</button>
 {% endblock %}

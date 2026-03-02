@@ -17,7 +17,7 @@ final class CategoryController extends AbstractController
     private const PREFIX = 'app_category_';
     private const TDIR = 'category';
 
-    #[Route(name: 'index', methods: ['GET'])]
+    #[Route(name: 'index', methods: ['GET', 'POST'])]
     public function index(CategoryRepository $categoryRepository): Response
     {
         return $this->render(self::TDIR . '/index.html.twig', [
@@ -30,21 +30,58 @@ final class CategoryController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $category = new Category();
-        $form = $this->createForm(CategoryType::class, $category);
+        $action = $this->generateUrl(self::PREFIX . 'new');
+
+        $form = $this->createForm(
+            CategoryType::class,
+            $category,
+            [
+                'action' => $action,
+            ]
+        );
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($category);
-            $entityManager->flush();
+        $render = [
+            'template' => self::TDIR . '/_form.html.twig',
+            'args' => [
+                'form' => $form,
+                'PREFIX' => self::PREFIX,
+                'title' => 'Create Category',
+                'action' => $action,
+                'method' => 'POST',
+            ]
+        ];
 
-            return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
+
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $entityManager->persist($category);
+                $entityManager->flush();
+
+                $redirectUrl = $this->generateUrl(self::PREFIX . 'index');
+
+                if ($request->isXmlHttpRequest()) {
+                    return $this->json([
+                        'success' => true,
+                        'redirectUrl' => $redirectUrl,
+                    ]);
+                }
+
+                return $this->redirect($redirectUrl);
+                //return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
+            }
+
+            return $this->render(
+                $render['template'],
+                $render['args'],
+                new Response(null, 422)
+            );
         }
-
-        return $this->render(self::TDIR . '/new.html.twig', [
-            'category' => $category,
-            'form' => $form,
-            'PREFIX' => self::PREFIX,
-        ]);
+            return $this->render(
+                $render['template'],
+                $render['args']
+            );
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]
@@ -59,20 +96,54 @@ final class CategoryController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(CategoryType::class, $category);
+        $action = $this->generateUrl(self::PREFIX . 'edit', ['id' => $category->getId()]);
+
+        $form = $this->createForm(
+            CategoryType::class,
+            $category,
+            [
+                'action' => $action,
+            ]
+        );
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+        $render = [
+            'template' => self::TDIR . '/_form.html.twig',
+            'args' => [
+                'form' => $form,
+                'category' => $category,
+                'PREFIX' => self::PREFIX,
+                'title' => 'Edit Category',
+            ]
+        ];
 
-            return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $entityManager->flush();
+
+                $redirectUrl = $this->generateUrl(self::PREFIX . 'index');
+
+                if ($request->isXmlHttpRequest()) {
+                    return $this->json([
+                        'success' => true,
+                        'redirectUrl' => $redirectUrl,
+                    ]);
+                }
+
+                return $this->redirect($redirectUrl);
+            }
+
+            return $this->render(
+                $render['template'],
+                $render['args'],
+                new Response(null, 422)
+            );
         }
 
-        return $this->render(self::TDIR . '/edit.html.twig', [
-            'category' => $category,
-            'form' => $form,
-            'PREFIX' => self::PREFIX,
-        ]);
+        return $this->render(
+            $render['template'],
+            $render['args']
+        );
     }
 
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
