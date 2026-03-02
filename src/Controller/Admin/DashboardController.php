@@ -21,7 +21,9 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Selftest');
+            ->setTitle('Selftest')
+            ->setTranslationDomain('EasyAdminBundle')
+            ->setLocales(['es']);
     }
 
     public function configureMenuItems(): array
