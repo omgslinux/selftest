@@ -1,2 +1,3 @@
 framework:
-    property_info: ~
+    property_info:
+        with_constructor_extractor: false
