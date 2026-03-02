@@ -6,8 +6,10 @@ use App\Repository\TopicRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: TopicRepository::class)]
+#[UniqueEntity(fields: ['name', 'category'], message: 'Ya existe un tema con ese nombre en esta categoría')]
 class Topic
 {
     #[ORM\Id]

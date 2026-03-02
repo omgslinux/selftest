@@ -34,6 +34,11 @@ class Category
         $this->topics = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->name . ' - ' . ($this->description ?? '');
+    }
+
     public function getId(): ?int
     {
         return $this->id;
