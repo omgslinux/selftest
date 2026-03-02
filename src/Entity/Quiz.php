@@ -2,14 +2,21 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\ActivableEntityTrait;
+use App\Entity\Traits\TimestampableEntityTrait;
 use App\Repository\QuizRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: QuizRepository::class)]
+#[UniqueEntity(fields: ['name', 'topic', 'level'], message: 'Ya existe un cuestionario con ese nombre para este tema y nivel')]
 class Quiz
 {
+    use TimestampableEntityTrait;
+    use ActivableEntityTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -35,6 +42,13 @@ class Quiz
     public function __construct()
     {
         $this->quizTests = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? '';
     }
 
     public function getId(): ?int

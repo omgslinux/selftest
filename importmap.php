@@ -38,4 +38,7 @@ return [
     '@symfony/ux-live-component' => [
         'path' => './vendor/symfony/ux-live-component/assets/dist/live_controller.js',
     ],
+    'quiz_cascade' => [
+        'path' => './assets/controllers/quiz_cascade_controller.js',
+    ],
 ];
