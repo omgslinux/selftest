@@ -10,6 +10,8 @@ return [
     'Levels' => 'Niveles',
     'Quiz' => 'Cuestionario',
     'Quizzes' => 'Cuestionarios',
+    'QuizQuestion' => 'Pregunta',
+    'QuizQuestions' => 'Preguntas',
     'New' => 'Nuevo',
     'Edit' => 'Editar',
     'Delete' => 'Eliminar',

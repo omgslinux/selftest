@@ -34,9 +34,9 @@ class Topic
     private Collection $quizzes;
 
     /**
-     * @var Collection<int, Question>
+     * @var Collection<int, QuizQuestion>
      */
-    #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'topic')]
+    #[ORM\OneToMany(targetEntity: QuizQuestion::class, mappedBy: 'topic')]
     private Collection $questions;
 
     public function __construct()
@@ -122,14 +122,14 @@ class Topic
     }
 
     /**
-     * @return Collection<int, Question>
+     * @return Collection<int, QuizQuestion>
      */
-    public function getQuestions(): Collection
+    public function getQuizQuestions(): Collection
     {
         return $this->questions;
     }
 
-    public function addQuestion(Question $question): static
+    public function addQuizQuestion(QuizQuestion $question): static
     {
         if (!$this->questions->contains($question)) {
             $this->questions->add($question);
@@ -139,7 +139,7 @@ class Topic
         return $this;
     }
 
-    public function removeQuestion(Question $question): static
+    public function removeQuizQuestion(QuizQuestion $question): static
     {
         if ($this->questions->removeElement($question)) {
             // set the owning side to null (unless already changed)

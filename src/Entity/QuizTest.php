@@ -21,7 +21,7 @@ class QuizTest
 
     #[ORM\ManyToOne(inversedBy: 'quizTests')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Question $question = null;
+    private ?QuizQuestion $question = null;
 
     /**
      * @var Collection<int, QuizTestAnswers>
@@ -51,12 +51,12 @@ class QuizTest
         return $this;
     }
 
-    public function getQuestion(): ?Question
+    public function getQuizQuestion(): ?QuizQuestion
     {
         return $this->question;
     }
 
-    public function setQuestion(?Question $question): static
+    public function setQuizQuestion(?QuizQuestion $question): static
     {
         $this->question = $question;
 

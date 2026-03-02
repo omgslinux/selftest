@@ -2,20 +2,20 @@
 
 namespace App\Controller;
 
-use App\Entity\Question;
-use App\Form\QuestionType;
-use App\Repository\QuestionRepository as REPO;
+use App\Entity\QuizQuestion;
+use App\Form\QuizQuestionType;
+use App\Repository\QuizQuestionRepository as REPO;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/question', name: 'app_question_')]
-final class QuestionController extends AbstractController
+#[Route('/quiz-question', name: 'app_quiz_question_')]
+final class QuizQuestionController extends AbstractController
 {
-    private const PREFIX = 'app_question_';
-    private const TDIR = 'question';
+    private const PREFIX = 'app_quiz_question_';
+    private const TDIR = 'quiz-question';
 
     #[Route(name: 'index', methods: ['GET'])]
     public function index(REPO $repo): Response
@@ -46,9 +46,9 @@ final class QuestionController extends AbstractController
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, REPO $repo): Response
     {
-        $question = new Question();
+        $question = new QuizQuestion();
         $form = $this->createForm(
-            QuestionType::class,
+            QuizQuestionType::class,
             $question,
             ['action' => $this->generateUrl(self::PREFIX. 'new')]
         );
@@ -68,7 +68,7 @@ final class QuestionController extends AbstractController
     }
 
     #[Route('/{id}/show', name: 'show', methods: ['GET'])]
-    public function show(Question $question): Response
+    public function show(QuizQuestion $question): Response
     {
         return $this->render(self::TDIR . '/show.html.twig', [
             'question' => $question,
@@ -77,10 +77,10 @@ final class QuestionController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Question $question, REPO $repo): Response
+    public function edit(Request $request, QuizQuestion $question, REPO $repo): Response
     {
         $form = $this->createForm(
-            QuestionType::class,
+            QuizQuestionType::class,
             $question,
             ['action' => $this->generateUrl(self::PREFIX. 'edit', ['id' => $question->getId()])]
         );
@@ -100,7 +100,7 @@ final class QuestionController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(Request $request, Question $question, REPO $repo): Response
+    public function delete(Request $request, QuizQuestion $question, REPO $repo): Response
     {
         if ($this->isCsrfTokenValid('delete'.$question->getId(), $request->getPayload()->getString('_token'))) {
             $repo->remove($question, true);

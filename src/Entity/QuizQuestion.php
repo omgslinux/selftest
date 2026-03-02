@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\QuestionRepository;
+use App\Repository\QuizQuestionRepository;
 use App\Entity\Traits\ActivableEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,10 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-#[ORM\Table(name: 'questions')]
-#[ORM\Entity(repositoryClass: QuestionRepository::class)]
+#[ORM\Table(name: 'quiz_questions')]
+#[ORM\Entity(repositoryClass: QuizQuestionRepository::class)]
 #[UniqueEntity(fields: 'text', message: 'Ya hay una pregunta con ese texto')]
-class Question
+class QuizQuestion
 {
     use ActivableEntityTrait;
 
