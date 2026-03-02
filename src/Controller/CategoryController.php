@@ -96,38 +96,54 @@ final class CategoryController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(CategoryType::class, $category);
+        $action = $this->generateUrl(self::PREFIX . 'edit', ['id' => $category->getId()]);
+
+        $form = $this->createForm(
+            CategoryType::class,
+            $category,
+            [
+                'action' => $action,
+            ]
+        );
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            if ($request->isXmlHttpRequest()) {
-                return $this->json([
-                    'success' => true,
-                    'redirectUrl' => $this->generateUrl(self::PREFIX . 'index'),
-                ]);
-            }
-
-            return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        if ($request->isXmlHttpRequest()) {
-            return $this->render(self::TDIR . '/form.html.twig', [
+        $render = [
+            'template' => self::TDIR . '/_form.html.twig',
+            'args' => [
                 'form' => $form,
                 'category' => $category,
                 'PREFIX' => self::PREFIX,
-                'action' => $this->generateUrl(self::PREFIX . 'edit', ['id' => $category->getId()]),
-                'method' => 'POST',
                 'title' => 'Edit Category',
-            ]);
+            ]
+        ];
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $entityManager->flush();
+
+                $redirectUrl = $this->generateUrl(self::PREFIX . 'index');
+
+                if ($request->isXmlHttpRequest()) {
+                    return $this->json([
+                        'success' => true,
+                        'redirectUrl' => $redirectUrl,
+                    ]);
+                }
+
+                return $this->redirect($redirectUrl);
+            }
+
+            return $this->render(
+                $render['template'],
+                $render['args'],
+                new Response(null, 422)
+            );
         }
 
-        return $this->render(self::TDIR . '/edit.html.twig', [
-            'category' => $category,
-            'form' => $form,
-            'PREFIX' => self::PREFIX,
-        ]);
+        return $this->render(
+            $render['template'],
+            $render['args']
+        );
     }
 
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
@@ -136,13 +152,6 @@ final class CategoryController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
-
-            if ($request->isXmlHttpRequest()) {
-                return $this->json([
-                    'success' => true,
-                    'redirectUrl' => $this->generateUrl(self::PREFIX . 'index'),
-                ]);
-            }
         }
 
         return $this->redirectToRoute(self::PREFIX . 'index', [], Response::HTTP_SEE_OTHER);
