@@ -29,15 +29,8 @@ class QuizQuestionAnswer
     #[ORM\Column(nullable: true)]
     private ?bool $valid = null;
 
-    /**
-     * @var Collection<int, QuizTestAnswers>
-     */
-    #[ORM\OneToMany(targetEntity: QuizTestAnswers::class, mappedBy: 'quizQuestionAnswer', cascade: ['persist', 'remove'])]
-    private Collection $quizTestAnswers;
-
     public function __construct()
     {
-        $this->quizTestAnswers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -77,35 +70,6 @@ class QuizQuestionAnswer
     public function setValid(?bool $valid): static
     {
         $this->valid = $valid;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, QuizTestAnswers>
-     */
-    public function getQuizTestAnswers(): Collection
-    {
-        return $this->quizTestAnswers;
-    }
-
-    public function addQuizTestAnswer(QuizTestAnswers $quizTestAnswer): static
-    {
-        if (!$this->quizTestAnswers->contains($quizTestAnswer)) {
-            $this->quizTestAnswers->add($quizTestAnswer);
-            $quizTestAnswer->setQuizQuestionAnswer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuizTestAnswer(QuizTestAnswers $quizTestAnswer): static
-    {
-        if ($this->quizTestAnswers->removeElement($quizTestAnswer)) {
-            if ($quizTestAnswer->getQuizQuestionAnswer() === $this) {
-                $quizTestAnswer->setQuizQuestionAnswer(null);
-            }
-        }
 
         return $this;
     }

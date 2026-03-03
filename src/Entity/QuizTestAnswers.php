@@ -13,54 +13,53 @@ class QuizTestAnswers
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'quizTestAnswers')]
+    #[ORM\OneToOne(inversedBy: 'quizTestAnswers')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?QuizTest $test = null;
+    private ?QuizTest $quizTest = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $user = null;
+    #[ORM\Column(type: 'json')]
+    private array $questions = [];
 
-    #[ORM\ManyToOne(inversedBy: 'quizTestAnswers')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?QuizQuestionAnswer $quizQuestionAnswer = null;
+    #[ORM\Column(type: 'json')]
+    private array $answers = [];
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTest(): ?QuizTest
+    public function getQuizTest(): ?QuizTest
     {
-        return $this->test;
+        return $this->quizTest;
     }
 
-    public function setTest(?QuizTest $test): static
+    public function setQuizTest(?QuizTest $quizTest): static
     {
-        $this->test = $test;
+        $this->quizTest = $quizTest;
 
         return $this;
     }
 
-    public function getUser(): ?string
+    public function getQuestions(): array
     {
-        return $this->user;
+        return $this->questions;
     }
 
-    public function setUser(string $user): static
+    public function setQuestions(array $questions): static
     {
-        $this->user = $user;
+        $this->questions = $questions;
 
         return $this;
     }
 
-    public function getQuizQuestionAnswer(): ?QuizQuestionAnswer
+    public function getAnswers(): array
     {
-        return $this->quizQuestionAnswer;
+        return $this->answers;
     }
 
-    public function setQuizQuestionAnswer(?QuizQuestionAnswer $quizQuestionAnswer): static
+    public function setAnswers(array $answers): static
     {
-        $this->quizQuestionAnswer = $quizQuestionAnswer;
+        $this->answers = $answers;
 
         return $this;
     }

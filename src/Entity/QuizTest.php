@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableEntityTrait;
 use App\Repository\QuizTestRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: QuizTestRepository::class)]
 class QuizTest
 {
+    use TimestampableEntityTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -21,17 +24,15 @@ class QuizTest
 
     #[ORM\ManyToOne(inversedBy: 'quizTests')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?QuizQuestion $question = null;
+    private ?User $user = null;
 
-    /**
-     * @var Collection<int, QuizTestAnswers>
-     */
-    #[ORM\OneToMany(targetEntity: QuizTestAnswers::class, mappedBy: 'test')]
-    private Collection $quizTestAnswers;
+    #[ORM\OneToOne(mappedBy: 'quizTest', cascade: ['persist', 'remove'])]
+    private ?QuizTestAnswers $quizTestAnswers = null;
 
     public function __construct()
     {
-        $this->quizTestAnswers = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -51,44 +52,26 @@ class QuizTest
         return $this;
     }
 
-    public function getQuizQuestion(): ?QuizQuestion
+    public function getUser(): ?User
     {
-        return $this->question;
+        return $this->user;
     }
 
-    public function setQuizQuestion(?QuizQuestion $question): static
+    public function setUser(?User $user): static
     {
-        $this->question = $question;
+        $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, QuizTestAnswers>
-     */
-    public function getQuizTestAnswers(): Collection
+    public function getQuizTestAnswers(): ?QuizTestAnswers
     {
         return $this->quizTestAnswers;
     }
 
-    public function addQuizTestAnswer(QuizTestAnswers $quizTestAnswer): static
+    public function setQuizTestAnswers(?QuizTestAnswers $quizTestAnswers): static
     {
-        if (!$this->quizTestAnswers->contains($quizTestAnswer)) {
-            $this->quizTestAnswers->add($quizTestAnswer);
-            $quizTestAnswer->setTest($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuizTestAnswer(QuizTestAnswers $quizTestAnswer): static
-    {
-        if ($this->quizTestAnswers->removeElement($quizTestAnswer)) {
-            // set the owning side to null (unless already changed)
-            if ($quizTestAnswer->getTest() === $this) {
-                $quizTestAnswer->setTest(null);
-            }
-        }
+        $this->quizTestAnswers = $quizTestAnswers;
 
         return $this;
     }

@@ -35,16 +35,9 @@ class QuizQuestion
     #[ORM\JoinColumn(nullable: false)]
     private ?Quiz $quiz = null;
 
-    /**
-     * @var Collection<int, QuizTest>
-     */
-    #[ORM\OneToMany(targetEntity: QuizTest::class, mappedBy: 'question')]
-    private Collection $quizTests;
-
     public function __construct()
     {
         $this->answers = new ArrayCollection();
-        $this->quizTests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -101,35 +94,6 @@ class QuizQuestion
     public function setQuiz(?Quiz $quiz): static
     {
         $this->quiz = $quiz;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, QuizTest>
-     */
-    public function getQuizTests(): Collection
-    {
-        return $this->quizTests;
-    }
-
-    public function addQuizTest(QuizTest $quizTest): static
-    {
-        if (!$this->quizTests->contains($quizTest)) {
-            $this->quizTests->add($quizTest);
-            $quizTest->setQuizQuestion($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuizTest(QuizTest $quizTest): static
-    {
-        if ($this->quizTests->removeElement($quizTest)) {
-            if ($quizTest->getQuizQuestion() === $this) {
-                $quizTest->setQuizQuestion(null);
-            }
-        }
 
         return $this;
     }
