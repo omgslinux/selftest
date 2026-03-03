@@ -28,16 +28,16 @@ class QuizQuestion
     /**
      * @var Collection<int, Answer>
      */
-    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', cascade: ["persist"])]
+    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'quizQuestion', cascade: ["persist"])]
     private Collection $answers;
+
+    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Quiz $quiz = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Level $level = null;
-
-    #[ORM\ManyToOne(inversedBy: 'questions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Topic $topic = null;
 
     /**
      * @var Collection<int, QuizTest>
@@ -80,7 +80,7 @@ class QuizQuestion
     {
         if (!$this->answers->contains($answer)) {
             $this->answers->add($answer);
-            $answer->setQuestion($this);
+            $answer->setQuizQuestion($this);
         }
 
         return $this;
@@ -89,9 +89,8 @@ class QuizQuestion
     public function removeAnswer(Answer $answer): static
     {
         if ($this->answers->removeElement($answer)) {
-            // set the owning side to null (unless already changed)
-            if ($answer->getQuestion() === $this) {
-                $answer->setQuestion(null);
+            if ($answer->getQuizQuestion() === $this) {
+                $answer->setQuizQuestion(null);
             }
         }
 
@@ -110,14 +109,14 @@ class QuizQuestion
         return $this;
     }
 
-    public function getTopic(): ?Topic
+    public function getQuiz(): ?Quiz
     {
-        return $this->topic;
+        return $this->quiz;
     }
 
-    public function setTopic(?Topic $topic): static
+    public function setQuiz(?Quiz $quiz): static
     {
-        $this->topic = $topic;
+        $this->quiz = $quiz;
 
         return $this;
     }
@@ -134,7 +133,7 @@ class QuizQuestion
     {
         if (!$this->quizTests->contains($quizTest)) {
             $this->quizTests->add($quizTest);
-            $quizTest->setQuestion($this);
+            $quizTest->setQuizQuestion($this);
         }
 
         return $this;
@@ -143,9 +142,8 @@ class QuizQuestion
     public function removeQuizTest(QuizTest $quizTest): static
     {
         if ($this->quizTests->removeElement($quizTest)) {
-            // set the owning side to null (unless already changed)
-            if ($quizTest->getQuestion() === $this) {
-                $quizTest->setQuestion(null);
+            if ($quizTest->getQuizQuestion() === $this) {
+                $quizTest->setQuizQuestion(null);
             }
         }
 

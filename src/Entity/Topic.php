@@ -33,16 +33,9 @@ class Topic
     #[ORM\OneToMany(targetEntity: Quiz::class, mappedBy: 'topic')]
     private Collection $quizzes;
 
-    /**
-     * @var Collection<int, QuizQuestion>
-     */
-    #[ORM\OneToMany(targetEntity: QuizQuestion::class, mappedBy: 'topic')]
-    private Collection $questions;
-
     public function __construct()
     {
         $this->quizzes = new ArrayCollection();
-        $this->questions = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -115,36 +108,6 @@ class Topic
             // set the owning side to null (unless already changed)
             if ($quiz->getTopic() === $this) {
                 $quiz->setTopic(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, QuizQuestion>
-     */
-    public function getQuizQuestions(): Collection
-    {
-        return $this->questions;
-    }
-
-    public function addQuizQuestion(QuizQuestion $question): static
-    {
-        if (!$this->questions->contains($question)) {
-            $this->questions->add($question);
-            $question->setTopic($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuizQuestion(QuizQuestion $question): static
-    {
-        if ($this->questions->removeElement($question)) {
-            // set the owning side to null (unless already changed)
-            if ($question->getTopic() === $this) {
-                $question->setTopic(null);
             }
         }
 

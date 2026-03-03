@@ -39,9 +39,16 @@ class Quiz
     #[ORM\OneToMany(targetEntity: QuizTest::class, mappedBy: 'quiz')]
     private Collection $quizTests;
 
+    /**
+     * @var Collection<int, QuizQuestion>
+     */
+    #[ORM\OneToMany(targetEntity: QuizQuestion::class, mappedBy: 'quiz')]
+    private Collection $questions;
+
     public function __construct()
     {
         $this->quizTests = new ArrayCollection();
+        $this->questions = new ArrayCollection();
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
     }
@@ -116,6 +123,35 @@ class Quiz
             // set the owning side to null (unless already changed)
             if ($quizTest->getQuiz() === $this) {
                 $quizTest->setQuiz(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuizQuestion>
+     */
+    public function getQuestions(): Collection
+    {
+        return $this->questions;
+    }
+
+    public function addQuestion(QuizQuestion $question): static
+    {
+        if (!$this->questions->contains($question)) {
+            $this->questions->add($question);
+            $question->setQuiz($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestion(QuizQuestion $question): static
+    {
+        if ($this->questions->removeElement($question)) {
+            if ($question->getQuiz() === $this) {
+                $question->setQuiz(null);
             }
         }
 
