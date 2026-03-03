@@ -52,11 +52,11 @@ class UserCrudController extends AbstractCrudController
         $fields[] = ChoiceField::new('role', 'Rol')
             ->setChoices([
                 'Admin' => 'Admin',
-                'Profesor' => 'Profesor',
-                'Alumno' => 'Alumno',
+                'Profesor' => 'Teacher',
+                'Usuario' => 'User',
             ])
             ->renderAsBadges();
-        
+
         $fields[] = BooleanField::new('active', 'Activo');
         $fields[] = DateTimeField::new('createdAt', 'Creado')->onlyOnIndex();
         $fields[] = DateTimeField::new('updatedAt', 'Actualizado')->onlyOnIndex();
