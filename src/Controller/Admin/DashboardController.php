@@ -34,11 +34,11 @@ class DashboardController extends AbstractDashboardController
     {
         return [
             MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
-            MenuItem::linkTo(CategoryCrudController::class, 'Category', 'fa fa-list'),
-            MenuItem::linkTo(TopicCrudController::class, 'Topic', 'fa fa-list'),
-            MenuItem::linkTo(LevelCrudController::class, 'Level', 'fa fa-list'),
-            MenuItem::linkTo(QuizCrudController::class, 'Quiz', 'fa fa-list'),
-            MenuItem::linkTo(QuizQuestionCrudController::class, 'Pregunta', 'fa fa-question'),
+            MenuItem::linkTo(CategoryCrudController::class, 'Categorías', 'fa fa-folder'),
+            MenuItem::linkTo(TopicCrudController::class, 'Temas', 'fa fa-tags'),
+            MenuItem::linkTo(LevelCrudController::class, 'Niveles', 'fa fa-signal'),
+            MenuItem::linkTo(QuizCrudController::class, 'Cuestionarios', 'fa fa-clipboard-list'),
+            MenuItem::linkTo(QuizQuestionCrudController::class, 'Preguntas', 'fa fa-question-circle'),
             MenuItem::linkTo(UserCrudController::class, 'Usuarios', 'fa fa-users'),
         ];
     }
