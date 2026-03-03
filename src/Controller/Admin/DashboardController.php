@@ -10,6 +10,7 @@ use App\Controller\Admin\CategoryCrudController;
 use App\Controller\Admin\TopicCrudController;
 use App\Controller\Admin\LevelCrudController;
 use App\Controller\Admin\QuizCrudController;
+use App\Controller\Admin\QuizQuestionCrudController;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
@@ -36,6 +37,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkTo(TopicCrudController::class, 'Topic', 'fa fa-list'),
             MenuItem::linkTo(LevelCrudController::class, 'Level', 'fa fa-list'),
             MenuItem::linkTo(QuizCrudController::class, 'Quiz', 'fa fa-list'),
+            MenuItem::linkTo(QuizQuestionCrudController::class, 'Pregunta', 'fa fa-question'),
         ];
     }
 }

@@ -26,18 +26,14 @@ class QuizQuestion
     private string $text = "";
 
     /**
-     * @var Collection<int, Answer>
+     * @var Collection<int, QuizQuestionAnswer>
      */
-    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'quizQuestion', cascade: ["persist"])]
+    #[ORM\OneToMany(targetEntity: QuizQuestionAnswer::class, mappedBy: 'quizQuestion', cascade: ["persist", "remove"])]
     private Collection $answers;
 
     #[ORM\ManyToOne(inversedBy: 'questions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Quiz $quiz = null;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Level $level = null;
 
     /**
      * @var Collection<int, QuizTest>
@@ -69,14 +65,14 @@ class QuizQuestion
     }
 
     /**
-     * @return Collection<int, Answer>
+     * @return Collection<int, QuizQuestionAnswer>
      */
     public function getAnswers(): Collection
     {
         return $this->answers;
     }
 
-    public function addAnswer(Answer $answer): static
+    public function addAnswer(QuizQuestionAnswer $answer): static
     {
         if (!$this->answers->contains($answer)) {
             $this->answers->add($answer);
@@ -86,25 +82,13 @@ class QuizQuestion
         return $this;
     }
 
-    public function removeAnswer(Answer $answer): static
+    public function removeAnswer(QuizQuestionAnswer $answer): static
     {
         if ($this->answers->removeElement($answer)) {
             if ($answer->getQuizQuestion() === $this) {
                 $answer->setQuizQuestion(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getLevel(): ?Level
-    {
-        return $this->level;
-    }
-
-    public function setLevel(?Level $level): static
-    {
-        $this->level = $level;
 
         return $this;
     }

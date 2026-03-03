@@ -22,7 +22,7 @@ class QuizTestAnswers
 
     #[ORM\ManyToOne(inversedBy: 'quizTestAnswers')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Answer $answer = null;
+    private ?QuizQuestionAnswer $quizQuestionAnswer = null;
 
     public function getId(): ?int
     {
@@ -53,14 +53,14 @@ class QuizTestAnswers
         return $this;
     }
 
-    public function getAnswer(): ?Answer
+    public function getQuizQuestionAnswer(): ?QuizQuestionAnswer
     {
-        return $this->answer;
+        return $this->quizQuestionAnswer;
     }
 
-    public function setAnswer(?Answer $answer): static
+    public function setQuizQuestionAnswer(?QuizQuestionAnswer $quizQuestionAnswer): static
     {
-        $this->answer = $answer;
+        $this->quizQuestionAnswer = $quizQuestionAnswer;
 
         return $this;
     }

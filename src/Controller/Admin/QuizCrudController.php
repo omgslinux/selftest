@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Topic;
 use App\Entity\Quiz;
+use App\Entity\QuizQuestion;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
@@ -12,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -69,6 +71,12 @@ class QuizCrudController extends AbstractCrudController
             IdField::new('id')->onlyOnIndex(),
             TextField::new('name', 'Nombre'),
             BooleanField::new('active', 'Activo'),
+            CollectionField::new('questions', 'Preguntas')
+                ->setEntryType(\App\Form\QuizQuestionWithAnswersType::class)
+                ->allowAdd(true)
+                ->allowDelete(true)
+                ->setFormTypeOption('by_reference', false)
+                ->onlyOnForms(),
             DateTimeField::new('createdAt', 'Creado')->onlyOnIndex(),
             DateTimeField::new('updatedAt', 'Actualizado')->onlyOnIndex(),
         ];

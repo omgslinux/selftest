@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\AnswerRepository;
+use App\Repository\QuizQuestionAnswerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\ActivableEntityTrait;
 
-#[ORM\Table(name: 'answers')]
-#[ORM\Entity(repositoryClass: AnswerRepository::class)]
-class Answer
+#[ORM\Table(name: 'quiz_question_answers')]
+#[ORM\Entity(repositoryClass: QuizQuestionAnswerRepository::class)]
+class QuizQuestionAnswer
 {
     use ActivableEntityTrait;
 
@@ -32,7 +32,7 @@ class Answer
     /**
      * @var Collection<int, QuizTestAnswers>
      */
-    #[ORM\OneToMany(targetEntity: QuizTestAnswers::class, mappedBy: 'answer')]
+    #[ORM\OneToMany(targetEntity: QuizTestAnswers::class, mappedBy: 'quizQuestionAnswer', cascade: ['persist', 'remove'])]
     private Collection $quizTestAnswers;
 
     public function __construct()
@@ -93,7 +93,7 @@ class Answer
     {
         if (!$this->quizTestAnswers->contains($quizTestAnswer)) {
             $this->quizTestAnswers->add($quizTestAnswer);
-            $quizTestAnswer->setAnswer($this);
+            $quizTestAnswer->setQuizQuestionAnswer($this);
         }
 
         return $this;
@@ -102,9 +102,8 @@ class Answer
     public function removeQuizTestAnswer(QuizTestAnswers $quizTestAnswer): static
     {
         if ($this->quizTestAnswers->removeElement($quizTestAnswer)) {
-            // set the owning side to null (unless already changed)
-            if ($quizTestAnswer->getAnswer() === $this) {
-                $quizTestAnswer->setAnswer(null);
+            if ($quizTestAnswer->getQuizQuestionAnswer() === $this) {
+                $quizTestAnswer->setQuizQuestionAnswer(null);
             }
         }
 
