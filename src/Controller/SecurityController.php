@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\QuizTest;
+use App\Repository\QuizRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,8 +37,41 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/', name: 'app_home')]
-    public function home(): Response
+    public function home(QuizRepository $quizRepository): Response
     {
-        return $this->render('security/home.html.twig');
+        $quizzes = $quizRepository->findBy(['active' => true], ['name' => 'ASC']);
+
+        return $this->render('security/home.html.twig', [
+            'quizzes' => $quizzes,
+        ]);
+    }
+
+    #[Route('/quiz/start/{id}', name: 'app_quiz_start')]
+    public function startQuiz(int $id, QuizRepository $quizRepository, EntityManagerInterface $em): Response
+    {
+        $quiz = $quizRepository->find($id);
+        
+        if (!$quiz) {
+            throw $this->createNotFoundException('Quiz no encontrado');
+        }
+
+        $user = $this->getUser();
+        
+        $quizTest = new QuizTest();
+        $quizTest->setQuiz($quiz);
+        $quizTest->setUser($user);
+        
+        $em->persist($quizTest);
+        $em->flush();
+
+        return $this->redirectToRoute('app_quiz_test', ['id' => $quizTest->getId()]);
+    }
+
+    #[Route('/quiz/test/{id}', name: 'app_quiz_test')]
+    public function test(int $id): Response
+    {
+        return $this->render('security/test.html.twig', [
+            'testId' => $id,
+        ]);
     }
 }
