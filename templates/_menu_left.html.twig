@@ -1,4 +1,4 @@
     {# Menú de usuario #}
     {% if is_granted('ROLE_USER') %}
-        <a class="btn" href="{{ path('homepage')}}" img="{{ asset('custom/img/vmaillogo.png') }}">Inicio</a>
+        <a class="btn" href="{{ path('app_home')}}" img="{{ asset('custom/img/vmaillogo.png') }}">Inicio</a>
     {% endif %}

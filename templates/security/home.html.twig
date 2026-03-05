@@ -1,21 +1,20 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SelfTest - Inicio</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg sticky-top">
+{% extends 'base.html.twig' %}
+
+{% block title %}SelfTest - Inicio{% endblock %}
+
+{% block body %}
+    <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="#">
                 <i class="fas fa-brain me-2"></i>
                 SelfTest
             </a>
             <div class="d-flex align-items-center gap-3">
+                {% if is_granted('ROLE_TEACHER') %}
+                <a href="{{ path('admin') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-cog"></i>
+                </a>
+                {% endif %}
                 <div class="user-info">
                     <div class="user-avatar">
                         {{ app.user.name|first|upper }}
@@ -34,25 +33,33 @@
             <h1 class="hero-title">¡Bienvenido, {{ app.user.name }}!</h1>
             <p class="hero-subtitle">Selecciona un cuestionario para comenzar</p>
             
-            {% if quizzes %}
+            {% if quizzesData %}
                 <div class="row g-4">
-                    {% for quiz in quizzes %}
+                    {% for item in quizzesData %}
                         <div class="col-md-6 col-lg-4">
-                            <div class="quiz-card" onclick="window.location='{{ path('app_quiz_start', {id: quiz.id}) }}'">
-                                <div class="quiz-icon purple">
-                                    <i class="fas fa-clipboard-list"></i>
+                            <div class="quiz-card">
+                                <div class="quiz-icon {% if item.completed %}green{% else %}purple{% endif %}">
+                                    <i class="fas {% if item.completed %}fa-check{% else %}fa-clipboard-list{% endif %}"></i>
                                 </div>
-                                <h4>{{ quiz.name }}</h4>
+                                <h4>{{ item.quiz.name }}</h4>
                                 <div class="quiz-meta">
-                                    <span><i class="fas fa-folder"></i> {{ quiz.topic.category.name }}</span>
-                                    <span><i class="fas fa-tag"></i> {{ quiz.topic.name }}</span>
-                                    <span><i class="fas fa-signal"></i> {{ quiz.level.name }}</span>
+                                    <span><i class="fas fa-folder"></i> {{ item.quiz.topic.category.name }}</span>
+                                    <span><i class="fas fa-tag"></i> {{ item.quiz.topic.name }}</span>
+                                    <span><i class="fas fa-signal"></i> {{ item.quiz.level.name }}</span>
                                 </div>
-                                <p>{{ quiz.questions|length }} preguntas</p>
-                                <div class="btn-start">
-                                    <i class="fas fa-play me-2"></i>
-                                    Comenzar
-                                </div>
+                                <p>{{ item.questionCount }} preguntas</p>
+                                
+                                {% if item.completed %}
+                                    <div class="btn-start completed">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Completado
+                                    </div>
+                                {% else %}
+                                    <a href="{{ path('app_quiz_start', {id: item.quiz.id}) }}" class="btn-start">
+                                        <i class="fas fa-play me-2"></i>
+                                        Comenzar
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}
@@ -65,7 +72,4 @@
             {% endif %}
         </div>
     </section>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}

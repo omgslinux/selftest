@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\QuizTest;
 use App\Repository\QuizRepository;
+use App\Repository\QuizTestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,41 +38,41 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/', name: 'app_home')]
-    public function home(QuizRepository $quizRepository): Response
+    public function home(QuizRepository $quizRepository, QuizTestRepository $quizTestRepository, EntityManagerInterface $em): Response
     {
-        $quizzes = $quizRepository->findBy(['active' => true], ['name' => 'ASC']);
-
-        return $this->render('security/home.html.twig', [
-            'quizzes' => $quizzes,
-        ]);
-    }
-
-    #[Route('/quiz/start/{id}', name: 'app_quiz_start')]
-    public function startQuiz(int $id, QuizRepository $quizRepository, EntityManagerInterface $em): Response
-    {
-        $quiz = $quizRepository->find($id);
-        
-        if (!$quiz) {
-            throw $this->createNotFoundException('Quiz no encontrado');
-        }
-
         $user = $this->getUser();
         
-        $quizTest = new QuizTest();
-        $quizTest->setQuiz($quiz);
-        $quizTest->setUser($user);
+        $quizzes = $quizRepository->findBy(['active' => true], ['name' => 'ASC']);
         
-        $em->persist($quizTest);
-        $em->flush();
+        $quizzesData = [];
+        foreach ($quizzes as $quiz) {
+            $questionCount = $quiz->getQuestions()->filter(fn($q) => $q->isActive())->count();
+            
+            if ($questionCount === 0) {
+                continue;
+            }
 
-        return $this->redirectToRoute('app_quiz_test', ['id' => $quizTest->getId()]);
-    }
+            $existingTest = $em->getRepository(QuizTest::class)->findOneBy(
+                ['user' => $user, 'quiz' => $quiz],
+                ['id' => 'DESC']
+            );
 
-    #[Route('/quiz/test/{id}', name: 'app_quiz_test')]
-    public function test(int $id): Response
-    {
-        return $this->render('security/test.html.twig', [
-            'testId' => $id,
+            $completed = false;
+            if ($existingTest) {
+                $answers = $existingTest->getQuizTestAnswers()?->getAnswers();
+                $completed = !empty($answers);
+            }
+
+            $quizzesData[] = [
+                'quiz' => $quiz,
+                'questionCount' => $questionCount,
+                'completed' => $completed,
+                'testId' => $existingTest?->getId(),
+            ];
+        }
+
+        return $this->render('security/home.html.twig', [
+            'quizzesData' => $quizzesData,
         ]);
     }
 }

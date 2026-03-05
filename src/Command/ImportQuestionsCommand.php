@@ -10,6 +10,7 @@ use App\Entity\QuizQuestionAnswer;
 use App\Entity\Topic;
 use App\Repository\CategoryRepository;
 use App\Repository\LevelRepository;
+use App\Repository\QuizQuestionRepository;
 use App\Repository\QuizRepository;
 use App\Repository\TopicRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +32,8 @@ class ImportQuestionsCommand extends Command
         private CategoryRepository $categoryRepository,
         private TopicRepository $topicRepository,
         private LevelRepository $levelRepository,
-        private QuizRepository $quizRepository
+        private QuizRepository $quizRepository,
+        private QuizQuestionRepository $quizQuestionRepository
     ) {
         parent::__construct();
     }
@@ -41,6 +43,7 @@ class ImportQuestionsCommand extends Command
         $this
             ->addArgument('file', InputArgument::REQUIRED, 'Ruta al archivo CSV o directorio')
             ->addArgument('delimiter', InputArgument::OPTIONAL, 'Delimitador del CSV', ';')
+            ->addOption('replace', 'r', null, 'Reemplazar preguntas existentes del quiz')
         ;
     }
 
@@ -49,6 +52,7 @@ class ImportQuestionsCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $path = $input->getArgument('file');
         $delimiter = $input->getArgument('delimiter');
+        $replace = $input->getOption('replace');
 
         $files = [];
         if (is_dir($path)) {
@@ -135,8 +139,16 @@ class ImportQuestionsCommand extends Command
                 $totalQuizzes++;
             }
 
-            $currentQuestion = null;
+            if ($replace) {
+                $existingQuestions = $this->quizQuestionRepository->findBy(['quiz' => $quiz]);
+                foreach ($existingQuestions as $eq) {
+                    $this->em->remove($eq);
+                }
+                $this->em->flush();
+                $io->info('Preguntas anteriores eliminadas del quiz: ' . $quizName);
+            }
 
+            $questionsMap = [];
             while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
                 $data = array_combine($headers, $row);
                 
@@ -148,14 +160,17 @@ class ImportQuestionsCommand extends Command
                     continue;
                 }
 
-                if (!$currentQuestion || $currentQuestion->getText() !== $questionText) {
+                if (!isset($questionsMap[$questionText])) {
                     $currentQuestion = new QuizQuestion();
                     $currentQuestion->setText($questionText);
                     $currentQuestion->setQuiz($quiz);
                     $currentQuestion->setActive(true);
                     
                     $this->em->persist($currentQuestion);
+                    $questionsMap[$questionText] = $currentQuestion;
                     $totalQuestions++;
+                } else {
+                    $currentQuestion = $questionsMap[$questionText];
                 }
 
                 $answer = new QuizQuestionAnswer();

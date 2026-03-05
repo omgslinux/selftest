@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SelfTest - Resultados{% endblock %}
+
+{% block body %}
+    <div class="test-container">
+        <div class="test-card">
+            <a href="{{ path('app_home') }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Volver al inicio
+            </a>
+            
+            <h1 class="text-center mt-4">{{ quizTest.quiz.name }}</h1>
+            
+            <div class="text-center mb-4">
+                <div class="score-circle mx-auto mb-3">
+                    <span class="score-number">{{ score }}%</span>
+                </div>
+                <p class="text-muted">Has acertado {{ correctCount }} de {{ totalQuestions }} preguntas</p>
+            </div>
+            
+            <hr>
+            
+            {% for item in results %}
+                <div class="question-block mb-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas {% if item.isCorrect %}fa-check-circle text-success{% else %}fa-times-circle text-danger{% endif %} me-2"></i>
+                        {{ loop.index }}. {{ item.question.text }}
+                    </h5>
+                    
+                    <div class="answers-list ps-4">
+                        {% for answer in item.question.answers %}
+                            {% set isUserAnswer = answer.id == item.userAnswerId %}
+                            {% set isCorrectAnswer = item.correctAnswer.id == answer.id %}
+                            
+                            <div class="form-check mb-2 {% if isCorrectAnswer %}text-success fw-bold{% elseif isUserAnswer and not isCorrectAnswer %}text-danger{% endif %}">
+                                <i class="fas {% if isCorrectAnswer %}fa-check{% elseif isUserAnswer and not isCorrectAnswer %}fa-times{% endif %} me-2"></i>
+                                {{ answer.text }}
+                                {% if isUserAnswer %}
+                                    <span class="badge bg-primary ms-2">Tu respuesta</span>
+                                {% endif %}
+                                {% if isCorrectAnswer %}
+                                    <span class="badge bg-success ms-2">Correcta</span>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <hr>
+            {% endfor %}
+            
+            <div class="text-center mt-4">
+                <a href="{{ path('app_home') }}" class="btn-login">
+                    <i class="fas fa-home me-2"></i>
+                    Volver al inicio
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
