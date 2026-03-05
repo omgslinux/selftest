@@ -104,7 +104,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return ['ROLE_' . strtoupper($this->role)];
+        $roleHierarchy = [
+            'Admin' => ['ROLE_ADMIN'],
+            'Teacher' => ['ROLE_TEACHER'],
+            'User' => ['ROLE_USER'],
+        ];
+
+        $roleKey = strtoupper($this->role);
+        return $roleHierarchy[$roleKey] ?? ['ROLE_' . $roleKey];
     }
 
     public function eraseCredentials(): void

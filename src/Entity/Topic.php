@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\ActivableEntityTrait;
 use App\Repository\TopicRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,6 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[UniqueEntity(fields: ['name', 'category'], message: 'Ya existe un tema con ese nombre en esta categoría')]
 class Topic
 {
+    use ActivableEntityTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -36,6 +38,7 @@ class Topic
     public function __construct()
     {
         $this->quizzes = new ArrayCollection();
+        $this->active = true;
     }
 
     public function __toString(): string
