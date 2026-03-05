@@ -41,4 +41,8 @@ return [
     'quiz_cascade' => [
         'path' => './assets/controllers/quiz_cascade_controller.js',
     ],
+    '@fortawesome/fontawesome-free/css/all.css' => [
+        'version' => '7.2.0',
+        'type' => 'css',
+    ],
 ];
