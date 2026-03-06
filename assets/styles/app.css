@@ -373,6 +373,11 @@ body {
     pointer-events: none;
 }
 
+.btn-start.flex-fill {
+    flex: 1;
+    text-align: center;
+}
+
 .user-info {
     display: flex;
     align-items: center;
