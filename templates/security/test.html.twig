@@ -10,8 +10,12 @@
                 Volver
             </a>
             
-            <h1 class="text-center mt-4">{{ quizTest.quiz.name }}</h1>
-            <p class="text-center text-muted mb-4">{{ questions|length }} preguntas</p>
+            <div class="text-center mt-4 mb-4">
+                <h1 class="quiz-title">{{ quizTest.quiz.name }}</h1>
+                <p class="quiz-topic">{{ quizTest.quiz.topic.category.name|replace({'AZ900': 'AZ-900'}) }}</p>
+                <span class="badge bg-{{ quizTest.quiz.level.name == 'Básico' ? 'success' : quizTest.quiz.level.name == 'Intermedio' ? 'warning' : 'danger' }}">{{ quizTest.quiz.level.name }}</span>
+                <p class="text-muted mt-2">{{ questions|length }} preguntas</p>
+            </div>
             
             <form method="post" action="{{ path('app_quiz_submit', {id: quizTest.id}) }}">
                 {% for question in questions %}

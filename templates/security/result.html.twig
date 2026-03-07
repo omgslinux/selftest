@@ -10,7 +10,11 @@
                 Volver al inicio
             </a>
             
-            <h1 class="text-center mt-4">{{ quizTest.quiz.name }}</h1>
+            <div class="text-center mt-4 mb-4">
+                <h1 class="quiz-title">{{ quizTest.quiz.name }}</h1>
+                <p class="quiz-topic">{{ quizTest.quiz.topic.category.name|replace({'AZ900': 'AZ-900'}) }}</p>
+                <span class="badge bg-{{ quizTest.quiz.level.name == 'Básico' ? 'success' : quizTest.quiz.level.name == 'Intermedio' ? 'warning' : 'danger' }}">{{ quizTest.quiz.level.name }}</span>
+            </div>
             
             <div class="text-center mb-4">
                 <div class="score-circle mx-auto mb-3">

@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Entity\Level;
 use App\Entity\QuizTest;
+use App\Repository\CategoryRepository;
+use App\Repository\LevelRepository;
 use App\Repository\QuizRepository;
 use App\Repository\QuizTestRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,11 +42,37 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/', name: 'app_home')]
-    public function home(QuizRepository $quizRepository, QuizTestRepository $quizTestRepository, EntityManagerInterface $em): Response
+    public function home(
+        QuizRepository $quizRepository,
+        QuizTestRepository $quizTestRepository,
+        EntityManagerInterface $em,
+        CategoryRepository $categoryRepository,
+        LevelRepository $levelRepository,
+        RequestStack $requestStack
+    ): Response
     {
         $user = $this->getUser();
         
-        $quizzes = $quizRepository->findBy(['active' => true], ['name' => 'ASC']);
+        $categoryId = $requestStack->getCurrentRequest()->query->get('category');
+        $levelId = $requestStack->getCurrentRequest()->query->get('level');
+        
+        $categories = $categoryRepository->findAll();
+        $levels = $levelRepository->findAll();
+        
+        $criteria = ['active' => true];
+        
+        if ($categoryId) {
+            $criteria['topic'] = $em->getRepository(\App\Entity\Topic::class)->findBy(['category' => $categoryId]);
+            if (empty($criteria['topic'])) {
+                $criteria['topic'] = null;
+            }
+        }
+        
+        if ($levelId) {
+            $criteria['level'] = $levelId;
+        }
+        
+        $quizzes = $quizRepository->findBy($criteria, ['name' => 'ASC']);
         
         $quizzesData = [];
         foreach ($quizzes as $quiz) {
@@ -73,6 +103,10 @@ class SecurityController extends AbstractController
 
         return $this->render('security/home.html.twig', [
             'quizzesData' => $quizzesData,
+            'categories' => $categories,
+            'levels' => $levels,
+            'selectedCategory' => $categoryId,
+            'selectedLevel' => $levelId,
         ]);
     }
 }

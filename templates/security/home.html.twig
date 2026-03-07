@@ -3,51 +3,72 @@
 {% block title %}SelfTest - Inicio{% endblock %}
 
 {% block body %}
-    <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-brain me-2"></i>
-                SelfTest
-            </a>
-            <div class="d-flex align-items-center gap-3">
-                {% if is_granted('ROLE_TEACHER') %}
-                <a href="{{ path('admin') }}" class="btn btn-outline-primary btn-sm">
-                    <i class="fas fa-cog"></i>
-                </a>
-                {% endif %}
-                <div class="user-info">
-                    <div class="user-avatar">
-                        {{ app.user.name|first|upper }}
-                    </div>
-                    <span class="fw-semibold">{{ app.user.name }}</span>
-                </div>
-                <a href="{{ path('app_logout') }}" class="btn btn-outline-danger btn-sm">
-                    <i class="fas fa-sign-out-alt"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
-    
     <section class="hero-section">
         <div class="container">
             <h1 class="hero-title">¡Bienvenido, {{ app.user.name }}!</h1>
             <p class="hero-subtitle">Selecciona un cuestionario para comenzar</p>
             
+            <div class="filter-bar mb-4 p-3 bg-white rounded shadow-sm">
+                <form method="get" action="{{ path('app_home') }}" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="category" class="form-label small fw-semibold">Categoría</label>
+                        <select name="category" id="category" class="form-select">
+                            <option value="">Todas las categorías</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
+                                    {{ category.name|replace({'AZ900': 'AZ-900'}) }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="level" class="form-label small fw-semibold">Nivel</label>
+                        <select name="level" id="level" class="form-select">
+                            <option value="">Todos los niveles</option>
+                            {% for level in levels %}
+                                <option value="{{ level.id }}" {% if selectedLevel == level.id %}selected{% endif %}>
+                                    {{ level.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter me-2"></i>
+                            Filtrar
+                        </button>
+                    </div>
+                </form>
+                {% if selectedCategory or selectedLevel %}
+                <div class="mt-2">
+                    <a href="{{ path('app_home') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i>
+                        Limpiar filtros
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            
             {% if quizzesData %}
                 <div class="row g-4">
                     {% for item in quizzesData %}
+                        {% set colors = ['purple', 'blue', 'green', 'orange', 'red', 'teal', 'pink', 'indigo'] %}
+                        {% set color = colors[loop.index0 % colors|length] %}
                         <div class="col-md-6 col-lg-4">
-                            <div class="quiz-card">
-                                <div class="quiz-icon {% if item.completed %}green{% else %}purple{% endif %}">
-                                    <i class="fas {% if item.completed %}fa-check{% else %}fa-clipboard-list{% endif %}"></i>
+                            <div class="quiz-card" style="background: linear-gradient(135deg, {% if item.quiz.level.name == 'Básico' %}#d1fae5{% elseif item.quiz.level.name == 'Intermedio' %}#fef3c7{% else %}#fee2e2{% endif %} 0%, {% if item.quiz.level.name == 'Básico' %}#a7f3d0{% elseif item.quiz.level.name == 'Intermedio' %}#fde68a{% else %}#fecaca{% endif %} 100%);">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="quiz-icon {% if item.completed %}green{% else %}{% if item.quiz.level.name == 'Básico' %}green{% elseif item.quiz.level.name == 'Intermedio' %}orange{% else %}red{% endif %}{% endif %}">
+                                        <i class="fas {% if item.completed %}fa-check{% else %}fa-clipboard-list{% endif %}"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h4 style="color: #1a1a2e; margin-bottom: 4px;">{{ item.quiz.name }}</h4>
+                                        <p class="mb-1" style="font-size: 12px; color: #4b5563;">{{ item.quiz.topic.category.name|replace({'AZ900': 'AZ-900'}) }}</p>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-{% if item.quiz.level.name == 'Básico' %}success{% elseif item.quiz.level.name == 'Intermedio' %}warning{% else %}danger{% endif %}" style="font-size: 11px;">{{ item.quiz.level.name }}</span>
+                                            <span style="font-size: 12px; color: #4b5563;">{{ item.questionCount }} preg.</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h4>{{ item.quiz.name }}</h4>
-                                <div class="quiz-meta">
-                                    <span><i class="fas fa-folder"></i> {{ item.quiz.topic.category.name }}</span>
-                                    <span><i class="fas fa-tag"></i> {{ item.quiz.topic.name }}</span>
-                                    <span><i class="fas fa-signal"></i> {{ item.quiz.level.name }}</span>
-                                </div>
-                                <p>{{ item.questionCount }} preguntas</p>
                                 
                                 {% if item.completed %}
                                     <div class="d-flex gap-2">
