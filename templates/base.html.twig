@@ -6,17 +6,33 @@
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
     </head>
     <body>
-        <header class="nav bg-info mb-3 flex-align-center">
-        {# Start left side #}
-        {% set liclass = "nav-item" %}{% set aclass = "nav-link" %}
-            {{ include('_header_left.html.twig') }}
-        {# End left side #}
-        {# Start right side #}
-            {{ include('_header_right.html.twig') }}
-        {# End right side #}
-
-        </header>
-
+        {% if is_granted('ROLE_USER') %}
+        <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('app_home') }}">
+                    <i class="fas fa-brain me-2"></i>
+                    SelfTest
+                </a>
+                <div class="d-flex align-items-center gap-3">
+                    {% if is_granted('ROLE_TEACHER') %}
+                    <a href="{{ path('admin') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-cog"></i>
+                    </a>
+                    {% endif %}
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            {{ app.user.name|first|upper }}
+                        </div>
+                        <span class="fw-semibold">{{ app.user.name }}</span>
+                    </div>
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </nav>
+        {% endif %}
+        
         <main>
             <div data-controller="modal-loader" class="d-flex justify-between">
                 <div class="container">
