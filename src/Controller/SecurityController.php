@@ -89,9 +89,21 @@ class SecurityController extends AbstractController
             );
 
             $completed = false;
+            $score = null;
             if ($existingTest) {
                 $answers = $existingTest->getQuizTestAnswers()?->getAnswers();
                 $completed = !empty($answers);
+                
+                if ($completed) {
+                    $correctCount = 0;
+                    foreach ($existingTest->getQuizTestAnswers()?->getAnswers() ?? [] as $answerId) {
+                        $answer = $em->getRepository(\App\Entity\QuizQuestionAnswer::class)->find($answerId);
+                        if ($answer && $answer->isValid()) {
+                            $correctCount++;
+                        }
+                    }
+                    $score = $questionCount > 0 ? round(($correctCount / $questionCount) * 100) : 0;
+                }
             }
 
             $quizzesData[] = [
@@ -99,6 +111,7 @@ class SecurityController extends AbstractController
                 'questionCount' => $questionCount,
                 'completed' => $completed,
                 'testId' => $existingTest?->getId(),
+                'score' => $score,
             ];
         }
 
