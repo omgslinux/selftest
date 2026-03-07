@@ -76,16 +76,29 @@ class ImportQuestionsCommand extends Command
 
         foreach ($files as $filePath) {
             $filename = basename($filePath, '.csv');
-            
-            if (!preg_match('/^(.+?)_([^-]+)_L([1-3])$/', $filename, $matches)) {
-                $io->warning('Archivo ignorado (formato inválido): ' . $filename . '. Usar: Topic_Quiz_L[1-3].csv');
+
+            // Nuevo Regex: Categoría_Tema_Quiz_LNivel
+            if (!preg_match('/^(.+?)_(.+?)_(.+?)_L([1-3])$/', $filename, $matches)) {
+                $io->warning('Archivo ignorado: ' . $filename . '. Usar: Categoria_Tema_Quiz_L[1-3].csv');
                 continue;
             }
 
-            [, $topicName, $quizName, $levelNum] = $matches;
+            [, $categoryName, $topicName, $quizName, $levelNum] = $matches;
+
+            // Limpiamos los nombres (reemplazando guiones o guiones bajos si lo prefieres)
+            $categoryName = trim(str_replace('_', ' ', $categoryName));
             $topicName = trim(str_replace('_', ' ', $topicName));
             $quizName = trim(str_replace('_', ' ', $quizName));
-            $levelNum = (int) $levelNum;
+
+            // En lugar de un simple replace:
+            // 1. Sustituimos '--' por un marcador temporal (ej: '###')
+            // 2. Sustituimos '-' por un espacio
+            // 3. Sustituimos el marcador '###' por un '-' real
+
+            $quizName = str_replace('--', '###', $quizName);
+            $quizName = str_replace('-', ' ', $quizName);
+            $quizName = str_replace('###', '-', $quizName);
+            $quizName = trim($quizName);
 
             $io->info('Procesando: ' . $filename);
 
@@ -96,8 +109,7 @@ class ImportQuestionsCommand extends Command
             }
 
             $headers = fgetcsv($handle, 0, $delimiter);
-            
-            $categoryName = $topicName;
+
             $category = $this->categoryRepository->findOneBy(['name' => $categoryName]);
             if (!$category) {
                 $category = new Category();
@@ -151,7 +163,7 @@ class ImportQuestionsCommand extends Command
             $questionsMap = [];
             while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
                 $data = array_combine($headers, $row);
-                
+
                 $questionText = trim($data['question'] ?? '');
                 $answerText = trim($data['answer'] ?? '');
                 $isCorrect = strtolower(trim($data['correct'] ?? '')) === 'true';
@@ -165,7 +177,7 @@ class ImportQuestionsCommand extends Command
                     $currentQuestion->setText($questionText);
                     $currentQuestion->setQuiz($quiz);
                     $currentQuestion->setActive(true);
-                    
+
                     $this->em->persist($currentQuestion);
                     $questionsMap[$questionText] = $currentQuestion;
                     $totalQuestions++;
@@ -178,7 +190,7 @@ class ImportQuestionsCommand extends Command
                 $answer->setValid($isCorrect);
                 $answer->setQuizQuestion($currentQuestion);
                 $answer->setActive(true);
-                
+
                 $this->em->persist($answer);
                 $totalAnswers++;
             }
