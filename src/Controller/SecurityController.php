@@ -52,10 +52,25 @@ class SecurityController extends AbstractController
     ): Response
     {
         $user = $this->getUser();
+        $session = $requestStack->getSession();
         
-        $categoryId = $requestStack->getCurrentRequest()->query->get('category');
-        $levelId = $requestStack->getCurrentRequest()->query->get('level');
-        $status = $requestStack->getCurrentRequest()->query->get('status');
+        $request = $requestStack->getCurrentRequest();
+        $categoryId = $request->query->get('category');
+        $levelId = $request->query->get('level');
+        $status = $request->query->get('status');
+        
+        if ($categoryId !== null || $levelId !== null || $status !== null) {
+            $session->set('quiz_filters', [
+                'category' => $categoryId,
+                'level' => $levelId,
+                'status' => $status,
+            ]);
+        } else {
+            $filters = $session->get('quiz_filters', []);
+            $categoryId = $filters['category'] ?? null;
+            $levelId = $filters['level'] ?? null;
+            $status = $filters['status'] ?? null;
+        }
         
         $categories = $categoryRepository->findAll();
         $levels = $levelRepository->findAll();
