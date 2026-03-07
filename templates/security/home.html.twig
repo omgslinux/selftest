@@ -10,7 +10,7 @@
             
             <div class="filter-bar mb-4 p-3 bg-white rounded shadow-sm">
                 <form method="get" action="{{ path('app_home') }}" class="row g-3 align-items-end">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="category" class="form-label small fw-semibold">Categoría</label>
                         <select name="category" id="category" class="form-select">
                             <option value="">Todas las categorías</option>
@@ -21,7 +21,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="level" class="form-label small fw-semibold">Nivel</label>
                         <select name="level" id="level" class="form-select">
                             <option value="">Todos los niveles</option>
@@ -32,14 +32,22 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <label for="status" class="form-label small fw-semibold">Estado</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="pending" {% if selectedStatus == 'pending' %}selected{% endif %}>Sin hacer</option>
+                            <option value="completed" {% if selectedStatus == 'completed' %}selected{% endif %}>Completados</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
                         <button type="submit" class="btn btn-primary w-100">
                             <i class="fas fa-filter me-2"></i>
                             Filtrar
                         </button>
                     </div>
                 </form>
-                {% if selectedCategory or selectedLevel %}
+                {% if selectedCategory or selectedLevel or selectedStatus %}
                 <div class="mt-2">
                     <a href="{{ path('app_home') }}" class="btn btn-sm btn-outline-secondary">
                         <i class="fas fa-times me-1"></i>

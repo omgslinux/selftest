@@ -55,6 +55,7 @@ class SecurityController extends AbstractController
         
         $categoryId = $requestStack->getCurrentRequest()->query->get('category');
         $levelId = $requestStack->getCurrentRequest()->query->get('level');
+        $status = $requestStack->getCurrentRequest()->query->get('status');
         
         $categories = $categoryRepository->findAll();
         $levels = $levelRepository->findAll();
@@ -101,12 +102,19 @@ class SecurityController extends AbstractController
             ];
         }
 
+        if ($status === 'completed') {
+            $quizzesData = array_filter($quizzesData, fn($item) => $item['completed']);
+        } elseif ($status === 'pending') {
+            $quizzesData = array_filter($quizzesData, fn($item) => !$item['completed']);
+        }
+
         return $this->render('security/home.html.twig', [
             'quizzesData' => $quizzesData,
             'categories' => $categories,
             'levels' => $levels,
             'selectedCategory' => $categoryId,
             'selectedLevel' => $levelId,
+            'selectedStatus' => $status,
         ]);
     }
 }
