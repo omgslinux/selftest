@@ -12,7 +12,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Table(name: 'quiz_questions')]
 #[ORM\Entity(repositoryClass: QuizQuestionRepository::class)]
-#[UniqueEntity(fields: 'text', message: 'Ya hay una pregunta con ese texto')]
+#[ORM\UniqueConstraint(name: 'quiz_text_question_idx', columns: ['text', 'quiz_id'])]
+#[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['text', 'quiz'], message: 'Ya hay una pregunta con ese texto')]
 class QuizQuestion
 {
     use ActivableEntityTrait;
@@ -28,7 +30,7 @@ class QuizQuestion
     /**
      * @var Collection<int, QuizQuestionAnswer>
      */
-    #[ORM\OneToMany(targetEntity: QuizQuestionAnswer::class, mappedBy: 'quizQuestion', cascade: ["persist", "remove"])]
+    #[ORM\OneToMany(targetEntity: QuizQuestionAnswer::class, mappedBy: 'quizQuestion', cascade: ["persist", "remove"], orphanRemoval: true)]
     private Collection $answers;
 
     #[ORM\ManyToOne(inversedBy: 'questions')]
@@ -96,5 +98,13 @@ class QuizQuestion
         $this->quiz = $quiz;
 
         return $this;
+    }
+
+    #[ORM\PreRemove]
+    public function preRemove(): void
+    {
+        foreach ($this->answers as $answer) {
+            $this->answers->removeElement($answer);
+        }
     }
 }
