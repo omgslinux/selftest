@@ -86,8 +86,8 @@ class ImportQuestionsCommand extends Command
             [, $categoryName, $topicName, $quizName, $levelNum] = $matches;
 
             // Limpiamos los nombres (reemplazando guiones o guiones bajos si lo prefieres)
-            $categoryName = trim(str_replace('_', ' ', $categoryName));
-            $topicName = trim(str_replace('_', ' ', $topicName));
+            $categoryName = trim(str_replace(['_', '-'], ' ', $categoryName));
+            $topicName = trim(str_replace(['_', '-'], ' ', $topicName));
             $quizName = trim(str_replace('_', ' ', $quizName));
 
             // En lugar de un simple replace:
