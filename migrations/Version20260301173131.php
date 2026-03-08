@@ -36,14 +36,17 @@ final class Version20260301173131 extends AbstractMigration
         $this->addSql('ALTER TABLE quiz ADD CONSTRAINT FK_A412FA925FB14BA7 FOREIGN KEY (level_id) REFERENCES level (id)');
         $this->addSql('ALTER TABLE quiz_test ADD CONSTRAINT FK_128E8257853CD175 FOREIGN KEY (quiz_id) REFERENCES quiz (id)');
         $this->addSql('ALTER TABLE quiz_test ADD CONSTRAINT FK_128E82571E27F6BF FOREIGN KEY (question_id) REFERENCES questions (id)');
+        $this->addSql('CREATE UNIQUE INDEX quiz_name_topic_level_idx ON quiz (name, topic_id, level_id)');
         $this->addSql('ALTER TABLE quiz_test_answers ADD CONSTRAINT FK_5A6897351E5D0459 FOREIGN KEY (test_id) REFERENCES quiz_test (id)');
         $this->addSql('ALTER TABLE quiz_test_answers ADD CONSTRAINT FK_5A689735AA334807 FOREIGN KEY (answer_id) REFERENCES answers (id)');
         $this->addSql('ALTER TABLE topic ADD CONSTRAINT FK_9D40DE1B12469DE2 FOREIGN KEY (category_id) REFERENCES category (id)');
+        $this->addSql('CREATE UNIQUE INDEX topic_name_category_idx ON topic (name, category_id)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('DROP INDEX topic_name_category_idx ON topic');
         $this->addSql('ALTER TABLE answers DROP FOREIGN KEY FK_50D0C6061E27F6BF');
         $this->addSql('ALTER TABLE questions DROP FOREIGN KEY FK_8ADC54D55FB14BA7');
         $this->addSql('ALTER TABLE questions DROP FOREIGN KEY FK_8ADC54D51F55203D');
@@ -51,6 +54,7 @@ final class Version20260301173131 extends AbstractMigration
         $this->addSql('ALTER TABLE quiz DROP FOREIGN KEY FK_A412FA925FB14BA7');
         $this->addSql('ALTER TABLE quiz_test DROP FOREIGN KEY FK_128E8257853CD175');
         $this->addSql('ALTER TABLE quiz_test DROP FOREIGN KEY FK_128E82571E27F6BF');
+        $this->addSql('DROP INDEX quiz_name_topic_level_idx ON quiz');
         $this->addSql('ALTER TABLE quiz_test_answers DROP FOREIGN KEY FK_5A6897351E5D0459');
         $this->addSql('ALTER TABLE quiz_test_answers DROP FOREIGN KEY FK_5A689735AA334807');
         $this->addSql('ALTER TABLE topic DROP FOREIGN KEY FK_9D40DE1B12469DE2');

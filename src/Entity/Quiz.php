@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: QuizRepository::class)]
 #[UniqueEntity(fields: ['name', 'topic', 'level'], message: 'Ya existe un cuestionario con ese nombre para este tema y nivel')]
+#[ORM\UniqueConstraint(name: 'quiz_name_topic_level_idx', columns: ['name', 'topic_id', 'level_id'])]
 class Quiz
 {
     use TimestampableEntityTrait;
