@@ -9,42 +9,42 @@
                 <i class="fas fa-arrow-left"></i>
                 Volver al inicio
             </a>
-            
+
             <div class="text-center mt-4 mb-4">
                 <h1 class="quiz-title">{{ quizTest.quiz.name }}</h1>
                 <p class="quiz-topic">{{ quizTest.quiz.topic.category.name|replace({'AZ900': 'AZ-900'}) }}</p>
                 <span class="badge bg-{{ quizTest.quiz.level.name == 'Básico' ? 'success' : quizTest.quiz.level.name == 'Intermedio' ? 'warning' : 'danger' }}">{{ quizTest.quiz.level.name }}</span>
             </div>
-            
+
             <div class="text-center mb-4">
                 <div class="score-circle mx-auto mb-3">
                     <span class="score-number">{{ score }}%</span>
                 </div>
                 <p class="text-muted">Has acertado {{ correctCount }} de {{ totalQuestions }} preguntas</p>
             </div>
-            
+
             <hr>
-            
+
             {% for item in results %}
                 <div class="question-block mb-4">
                     <h5 class="fw-bold mb-3">
                         <i class="fas {% if item.isCorrect %}fa-check-circle text-success{% else %}fa-times-circle text-danger{% endif %} me-2"></i>
                         {{ loop.index }}. {{ item.question.text }}
                     </h5>
-                    
+
                     <div class="answers-list ps-4">
                         {% for answer in item.question.answers %}
                             {% set isUserAnswer = answer.id == item.userAnswerId %}
                             {% set isCorrectAnswer = answer.id == item.correctAnswer.id %}
-                            
+
                             <div class="form-check mb-2 {% if isCorrectAnswer %}text-success fw-bold{% elseif isUserAnswer and not isCorrectAnswer %}text-danger{% endif %}">
                                 <i class="fas {% if isCorrectAnswer %}fa-check{% elseif isUserAnswer and not isCorrectAnswer %}fa-times{% endif %} me-2"></i>
                                 {{ answer.text }}
                                 {% if isUserAnswer %}
                                     <span class="badge bg-primary ms-2">Tu respuesta</span>
-                                {% endif %}
-                                {% if isCorrectAnswer %}
-                                    <span class="badge bg-success ms-2">Correcta</span>
+                                    {% if isCorrectAnswer %}
+                                        <span class="badge bg-success ms-2">Correcta</span>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         {% endfor %}
@@ -52,7 +52,7 @@
                 </div>
                 <hr>
             {% endfor %}
-            
+
             <div class="text-center mt-4">
                 <a href="{{ path('app_home') }}" class="btn-login">
                     <i class="fas fa-home me-2"></i>
