@@ -123,8 +123,9 @@ class QuizTestController extends AbstractController
         $totalQuestions = count($questions);
         
         $results = [];
-        foreach ($questions as $question) {
-            $userAnswerId = $userAnswers[$question['id']] ?? null;
+        foreach ($questions as $index => $question) {
+            $questionId = (string)$question['id'];
+            $userAnswerId = $userAnswers[$questionId] ?? null;
             $correctAnswer = null;
             
             foreach ($question['answers'] as $answer) {
@@ -134,7 +135,11 @@ class QuizTestController extends AbstractController
                 }
             }
             
-            $isCorrect = $userAnswerId == $correctAnswer['id'];
+            $isCorrect = false;
+            if ($userAnswerId !== null && $correctAnswer !== null) {
+                $isCorrect = (string)$userAnswerId === (string)$correctAnswer['id'];
+            }
+            
             if ($isCorrect) {
                 $correctCount++;
             }

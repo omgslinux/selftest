@@ -110,13 +110,23 @@ class SecurityController extends AbstractController
                 $completed = !empty($answers);
                 
                 if ($completed) {
+                    $questions = $existingTest->getQuizTestAnswers()?->getQuestions() ?? [];
+                    $userAnswers = $existingTest->getQuizTestAnswers()?->getAnswers() ?? [];
                     $correctCount = 0;
-                    foreach ($existingTest->getQuizTestAnswers()?->getAnswers() ?? [] as $answerId) {
-                        $answer = $em->getRepository(\App\Entity\QuizQuestionAnswer::class)->find($answerId);
-                        if ($answer && $answer->isValid()) {
-                            $correctCount++;
+                    
+                    foreach ($questions as $question) {
+                        $userAnswerId = $userAnswers[(string)$question['id']] ?? null;
+                        
+                        foreach ($question['answers'] as $answer) {
+                            if ($answer['correct']) {
+                                if ($userAnswerId !== null && (string)$userAnswerId === (string)$answer['id']) {
+                                    $correctCount++;
+                                }
+                                break;
+                            }
                         }
                     }
+                    
                     $score = $questionCount > 0 ? round(($correctCount / $questionCount) * 100) : 0;
                 }
             }

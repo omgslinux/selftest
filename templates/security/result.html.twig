@@ -35,7 +35,7 @@
                     <div class="answers-list ps-4">
                         {% for answer in item.question.answers %}
                             {% set isUserAnswer = answer.id == item.userAnswerId %}
-                            {% set isCorrectAnswer = item.correctAnswer.id == answer.id %}
+                            {% set isCorrectAnswer = answer.id == item.correctAnswer.id %}
                             
                             <div class="form-check mb-2 {% if isCorrectAnswer %}text-success fw-bold{% elseif isUserAnswer and not isCorrectAnswer %}text-danger{% endif %}">
                                 <i class="fas {% if isCorrectAnswer %}fa-check{% elseif isUserAnswer and not isCorrectAnswer %}fa-times{% endif %} me-2"></i>
