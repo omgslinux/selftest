@@ -43,6 +43,7 @@
                     </div>
                     
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <input type="hidden" name="_target_path" value="{{ path('app_home') }}">
                     
                     <button class="btn-login" type="submit">
                         <i class="fas fa-sign-in-alt me-2"></i>
