@@ -108,13 +108,15 @@ class ImportQuestionsCommand extends Command
                 continue;
             }
 
-            $headers = fgetcsv($handle, 0, $delimiter);
+            $headers = fgetcsv($handle, 0, $delimiter, '"');
+            $headers = $headers ?: [];
 
             $category = $this->categoryRepository->findOneBy(['name' => $categoryName]);
             if (!$category) {
                 $category = new Category();
                 $category->setName($categoryName);
                 $this->em->persist($category);
+                $this->em->flush($category);
                 $totalCategories++;
             }
 
@@ -161,7 +163,7 @@ class ImportQuestionsCommand extends Command
             }
 
             $questionsMap = [];
-            while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+            while (($row = fgetcsv($handle, 0, $delimiter, '"')) !== false) {
                 $data = array_combine($headers, $row);
 
                 $questionText = trim($data['question'] ?? '');
@@ -196,9 +198,9 @@ class ImportQuestionsCommand extends Command
             }
 
             fclose($handle);
-        }
 
-        $this->em->flush();
+            $this->em->flush();
+        }
 
         $io->success(sprintf(
             'Importación completada: %d categorías, %d temas, %d quizzes, %d preguntas y %d respuestas',
