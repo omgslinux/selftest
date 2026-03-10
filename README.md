@@ -30,9 +30,6 @@ composer install
 cp .env .env.local
 # Editar .env.local con la configuración de base de datos
 
-# Crear la base de datos
-php bin/console doctrine:database:create
-
 # Ejecutar migraciones
 php bin/console doctrine:migrations:migrate
 
@@ -87,4 +84,14 @@ php bin/console app:import-questions var/Quiz/AZ-900/
 question;answer;correct
 ¿Qué es Azure?;Servicio de nube de Microsoft;true
 ¿Qué es Azure?;Un sistema operativo de escritorio;false
+```
+
+### Comandos adicionales
+
+```bash
+# Crear o actualizar usuario administrador
+php bin/console app:create-admin                    # usuario: admin, contraseña aleatoria
+php bin/console app:create-admin admin               # usuario: admin, contraseña aleatoria
+php bin/console app:create-admin admin MiPass123    # usuario: admin con contraseña específica
+php bin/console app:create-admin juan MiPass456 "Juan Pérez"  # usuario personalizado
 ```
