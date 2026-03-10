@@ -34,6 +34,7 @@ class DashboardController extends AbstractDashboardController
     {
         return [
             MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
+            MenuItem::linkToUrl('Ir a Tests', 'fa fa-brain', '/'),
             MenuItem::linkTo(CategoryCrudController::class, 'Categorías', 'fa fa-folder'),
             MenuItem::linkTo(TopicCrudController::class, 'Temas', 'fa fa-tags'),
             MenuItem::linkTo(LevelCrudController::class, 'Niveles', 'fa fa-signal'),

@@ -55,6 +55,13 @@ class SecurityController extends AbstractController
         $session = $requestStack->getSession();
         
         $request = $requestStack->getCurrentRequest();
+        $clear = $request->query->get('clear');
+        
+        if ($clear) {
+            $session->remove('quiz_filters');
+            return $this->redirectToRoute('app_home');
+        }
+        
         $categoryId = $request->query->get('category');
         $levelId = $request->query->get('level');
         $status = $request->query->get('status');

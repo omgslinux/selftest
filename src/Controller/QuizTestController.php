@@ -18,29 +18,29 @@ class QuizTestController extends AbstractController
     public function startQuiz(int $id, QuizRepository $quizRepository, EntityManagerInterface $em): Response
     {
         $quiz = $quizRepository->find($id);
-        
+
         if (!$quiz) {
             throw $this->createNotFoundException('Quiz no encontrado');
         }
 
         $user = $this->getUser();
-        
+
         $quizTest = new QuizTest();
         $quizTest->setQuiz($quiz);
         $quizTest->setUser($user);
-        
+
         $em->persist($quizTest);
-        
+
         $questions = $quiz->getQuestions()->filter(fn($q) => $q->isActive());
         $questionsArray = $questions->getValues();
         shuffle($questionsArray);
-        
+
         $questionsJson = [];
-        
+
         foreach ($questionsArray as $index => $question) {
             $answers = $question->getAnswers()->filter(fn($a) => $a->isActive())->getValues();
             shuffle($answers);
-            
+
             $answersJson = [];
             foreach ($answers as $answerIndex => $answer) {
                 $answersJson[] = [
@@ -49,7 +49,7 @@ class QuizTestController extends AbstractController
                     'correct' => $answer->isValid(),
                 ];
             }
-            
+
             $questionsJson[] = [
                 'id' => $question->getId(),
                 'text' => $question->getText(),
@@ -57,12 +57,12 @@ class QuizTestController extends AbstractController
                 'answers' => $answersJson,
             ];
         }
-        
+
         $quizTestAnswers = new QuizTestAnswers();
         $quizTestAnswers->setQuizTest($quizTest);
         $quizTestAnswers->setQuestions($questionsJson);
         $quizTestAnswers->setAnswers([]);
-        
+
         $em->persist($quizTestAnswers);
         $em->flush();
 
@@ -73,7 +73,7 @@ class QuizTestController extends AbstractController
     public function test(int $id, QuizTestRepository $quizTestRepository): Response
     {
         $quizTest = $quizTestRepository->find($id);
-        
+
         if (!$quizTest) {
             throw $this->createNotFoundException('Test no encontrado');
         }
@@ -90,13 +90,13 @@ class QuizTestController extends AbstractController
     public function submit(int $id, QuizTestRepository $quizTestRepository, Request $request, EntityManagerInterface $em): Response
     {
         $quizTest = $quizTestRepository->find($id);
-        
+
         if (!$quizTest) {
             throw $this->createNotFoundException('Test no encontrado');
         }
 
         $answers = $request->request->all('answers');
-        
+
         $quizTestAnswers = $quizTest->getQuizTestAnswers();
         if ($quizTestAnswers) {
             $quizTestAnswers->setAnswers($answers ?: []);
@@ -110,40 +110,47 @@ class QuizTestController extends AbstractController
     public function result(int $id, QuizTestRepository $quizTestRepository): Response
     {
         $quizTest = $quizTestRepository->find($id);
-        
+
         if (!$quizTest) {
-            throw $this->createNotFoundException('Test no encontrado');
+            $this->addFlash('warning', 'Test no encontrado');
+            return $this->redirectToRoute('app_home');
+        }
+
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_TEACHER') && $quizTest->getUser() !== $user) {
+            $this->addFlash('danger', 'No tienes acceso a este resultado');
+            return $this->redirectToRoute('app_home');
         }
 
         $quizTestAnswers = $quizTest->getQuizTestAnswers();
         $questions = $quizTestAnswers?->getQuestions() ?? [];
         $userAnswers = $quizTestAnswers?->getAnswers() ?? [];
-        
+
         $correctCount = 0;
         $totalQuestions = count($questions);
-        
+
         $results = [];
         foreach ($questions as $index => $question) {
             $questionId = (string)$question['id'];
             $userAnswerId = $userAnswers[$questionId] ?? null;
             $correctAnswer = null;
-            
+
             foreach ($question['answers'] as $answer) {
                 if ($answer['correct']) {
                     $correctAnswer = $answer;
                     break;
                 }
             }
-            
+
             $isCorrect = false;
             if ($userAnswerId !== null && $correctAnswer !== null) {
                 $isCorrect = (string)$userAnswerId === (string)$correctAnswer['id'];
             }
-            
+
             if ($isCorrect) {
                 $correctCount++;
             }
-            
+
             $results[] = [
                 'question' => $question,
                 'userAnswerId' => $userAnswerId,
@@ -151,7 +158,7 @@ class QuizTestController extends AbstractController
                 'isCorrect' => $isCorrect,
             ];
         }
-        
+
         $score = $totalQuestions > 0 ? round(($correctCount / $totalQuestions) * 100) : 0;
 
         return $this->render('security/result.html.twig', [
