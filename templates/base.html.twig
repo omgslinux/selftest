@@ -4,6 +4,9 @@
         <meta charset="UTF-8">
         <title>{% block title %}{% trans %}SelfTest{% endtrans %}{% endblock %}</title>
         <link rel="icon" href="{{ asset('favicon.svg') }}">
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
     </head>
     <body>
         {% if is_granted('ROLE_USER') %}
@@ -32,7 +35,7 @@
             </div>
         </nav>
         {% endif %}
-        
+
         <main>
             <div data-controller="modal-loader" class="d-flex justify-between">
                 <div class="container">
@@ -53,9 +56,6 @@
 
 
         </footer>
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
 
      </body>
 </html>
