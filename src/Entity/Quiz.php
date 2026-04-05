@@ -37,7 +37,7 @@ class Quiz
     /**
      * @var Collection<int, QuizTest>
      */
-    #[ORM\OneToMany(targetEntity: QuizTest::class, mappedBy: 'quiz')]
+    #[ORM\OneToMany(targetEntity: QuizTest::class, mappedBy: 'quiz', cascade: ['persist', 'remove'])]
     private Collection $quizTests;
 
     /**
