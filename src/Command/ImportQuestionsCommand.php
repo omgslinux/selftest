@@ -174,7 +174,12 @@ class ImportQuestionsCommand extends Command
                     continue;
                 }
 
-                if (!isset($questionsMap[$questionText])) {
+                $currentQuestion = $this->quizQuestionRepository->findOneBy([
+                    'text' => $questionText,
+                    'quiz' => $quiz
+                ]);
+
+                if (null == $currentQuestion) {
                     $currentQuestion = new QuizQuestion();
                     $currentQuestion->setText($questionText);
                     $currentQuestion->setQuiz($quiz);
@@ -183,18 +188,27 @@ class ImportQuestionsCommand extends Command
                     $this->em->persist($currentQuestion);
                     $questionsMap[$questionText] = $currentQuestion;
                     $totalQuestions++;
-                } else {
-                    $currentQuestion = $questionsMap[$questionText];
                 }
 
-                $answer = new QuizQuestionAnswer();
-                $answer->setText($answerText);
-                $answer->setValid($isCorrect);
-                $answer->setQuizQuestion($currentQuestion);
-                $answer->setActive(true);
+                $questionsMap[$questionText] = $currentQuestion;
 
+                $answer = null;
+                foreach ($currentQuestion->getAnswers() as $qa) {
+                    if ($qa->getText() === $answerText) {
+                        $answer = $qa;
+                        break;
+                    }
+                }
+
+                if (null==$answer) {
+                    $answer = new QuizQuestionAnswer();
+                    $answer->setText($answerText);
+                    $answer->setQuizQuestion($currentQuestion);
+                    $answer->setActive(true);
+                    $totalAnswers++;
+                }
+                $answer->setValid($isCorrect);
                 $this->em->persist($answer);
-                $totalAnswers++;
             }
 
             fclose($handle);
