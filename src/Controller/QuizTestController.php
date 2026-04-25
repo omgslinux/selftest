@@ -54,6 +54,7 @@ class QuizTestController extends AbstractController
             $questionsJson[] = [
                 'id' => $question->getId(),
                 'text' => $question->getText(),
+                'intro' => $question->getIntro(),
                 'order' => $index,
                 'answers' => $answersJson,
             ];

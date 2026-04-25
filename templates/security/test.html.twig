@@ -20,6 +20,9 @@
             <form method="post" action="{{ path('app_quiz_submit', {id: quizTest.id}) }}">
                 {% for question in questions %}
                     <div class="question-block mb-4">
+                        {% if question.intro %}
+                            <div class="question-intro mb-3 p-3 bg-light rounded">{{ question.intro|sanitize_html }}</div>
+                        {% endif %}
                         <h5 class="fw-bold mb-3">{{ loop.index }}. {{ question.text }}</h5>
                         
                         <div class="answers-list">

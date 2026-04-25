@@ -61,7 +61,7 @@ body.login-page::after {
     backdrop-filter: blur(20px);
     border-radius: 24px;
     padding: 48px 40px;
-    box-shadow: 
+    box-shadow:
         0 25px 50px -12px rgba(0, 0, 0, 0.5),
         0 0 0 1px rgba(255, 255, 255, 0.1);
     transform: translateY(0);
@@ -70,7 +70,7 @@ body.login-page::after {
 
 .login-card:hover {
     transform: translateY(-5px);
-    box-shadow: 
+    box-shadow:
         0 30px 60px -12px rgba(0, 0, 0, 0.6),
         0 0 0 1px rgba(255, 255, 255, 0.1);
 }
@@ -436,7 +436,7 @@ body {
 
 /* Test Page */
 .test-container {
-    max-width: 800px;
+    # max-width: 800px;
     margin: 50px auto;
     padding: 30px;
 }

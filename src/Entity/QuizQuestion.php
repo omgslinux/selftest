@@ -27,6 +27,9 @@ class QuizQuestion
     #[ORM\Column(length: 255, nullable: false)]
     private string $text = "";
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $intro = null;
+
     /**
      * @var Collection<int, QuizQuestionAnswer>
      */
@@ -55,6 +58,18 @@ class QuizQuestion
     public function setText(string $text): static
     {
         $this->text = $text;
+
+        return $this;
+    }
+
+    public function getIntro(): ?string
+    {
+        return $this->intro;
+    }
+
+    public function setIntro(?string $intro): static
+    {
+        $this->intro = $intro;
 
         return $this;
     }
