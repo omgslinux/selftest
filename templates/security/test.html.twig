@@ -9,28 +9,31 @@
                 <i class="fas fa-arrow-left"></i>
                 Volver
             </a>
-            
+
             <div class="text-center mt-4 mb-4">
                 <h1 class="quiz-title">{{ quizTest.quiz.name }}</h1>
                 <p class="quiz-topic">{{ quizTest.quiz.topic.category.name|replace({'AZ900': 'AZ-900'}) }}</p>
                 <span class="badge bg-{{ quizTest.quiz.level.name == 'Básico' ? 'success' : quizTest.quiz.level.name == 'Intermedio' ? 'warning' : 'danger' }}">{{ quizTest.quiz.level.name }}</span>
                 <p class="text-muted mt-2">{{ questions|length }} preguntas</p>
             </div>
-            
+
             <form method="post" action="{{ path('app_quiz_submit', {id: quizTest.id}) }}">
                 {% for question in questions %}
                     <div class="question-block mb-4">
                         {% if question.intro %}
+                            <h5 class="fw-bold mb-3">{{ loop.index }}.</h5>
                             <div class="question-intro mb-3 p-3 bg-light rounded">{{ question.intro|sanitize_html }}</div>
+                            <h5>{{ question.text }}</h5>
+                        {% else %}
+                            <h5 class="fw-bold mb-3">{{ loop.index }}. {{ question.text }}</h5>
                         {% endif %}
-                        <h5 class="fw-bold mb-3">{{ loop.index }}. {{ question.text }}</h5>
-                        
+
                         <div class="answers-list">
                             {% for answer in question.answers %}
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" 
-                                           name="answers[{{ question.id }}]" 
-                                           id="answer_{{ question.id }}_{{ loop.index }}" 
+                                    <input class="form-check-input" type="radio"
+                                           name="answers[{{ question.id }}]"
+                                           id="answer_{{ question.id }}_{{ loop.index }}"
                                            value="{{ answer.id }}">
                                     <label class="form-check-label" for="answer_{{ question.id }}_{{ loop.index }}">
                                         {{ answer.text }}
@@ -41,7 +44,7 @@
                     </div>
                     <hr>
                 {% endfor %}
-                
+
                 <div class="text-center mt-4">
                     <button type="submit" class="btn-login">
                         <i class="fas fa-check me-2"></i>

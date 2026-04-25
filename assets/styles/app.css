@@ -538,6 +538,10 @@ hr {
     padding: 15px 0;
 }
 
+.question-intro {
+    border: black solid;
+}
+
 .answers-list .form-check {
     padding: 8px 12px;
     border-radius: 8px;
