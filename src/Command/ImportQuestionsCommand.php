@@ -85,20 +85,20 @@ class ImportQuestionsCommand extends Command
 
             [, $categoryName, $topicName, $quizName, $levelNum] = $matches;
 
-            // Limpiamos los nombres (reemplazando guiones o guiones bajos si lo prefieres)
-            $categoryName = trim(str_replace(['_', '-'], ' ', $categoryName));
-            $topicName = trim(str_replace(['_', '-'], ' ', $topicName));
-            $quizName = trim(str_replace('_', ' ', $quizName));
+            // Limpiamos los nombres:
+            // - category: solo '_' → espacio, mantener guiones (ej: "AZ-104" → "AZ-104")
+            // - topic y quiz: '--' → '-', '-' → espacio (ej: "Manage-Azure" → "Manage Azure")
+            $categoryName = trim(str_replace('_', ' ', $categoryName));
 
-            // En lugar de un simple replace:
-            // 1. Sustituimos '--' por un marcador temporal (ej: '###')
-            // 2. Sustituimos '-' por un espacio
-            // 3. Sustituimos el marcador '###' por un '-' real
+            $sanitize = function ($name) {
+                $name = str_replace('--', '###', $name);
+                $name = str_replace('-', ' ', $name);
+                $name = str_replace('###', '-', $name);
+                return trim(str_replace('_', ' ', $name));
+            };
 
-            $quizName = str_replace('--', '###', $quizName);
-            $quizName = str_replace('-', ' ', $quizName);
-            $quizName = str_replace('###', '-', $quizName);
-            $quizName = trim($quizName);
+            $topicName = $sanitize($topicName);
+            $quizName = $sanitize($quizName);
 
             $io->info('Procesando: ' . $filename);
 
@@ -169,29 +169,32 @@ class ImportQuestionsCommand extends Command
                 $questionText = trim($data['question'] ?? '');
                 $answerText = trim($data['answer'] ?? '');
                 $isCorrect = strtolower(trim($data['correct'] ?? '')) === 'true';
+                $explanation = isset($data['explanation']) ? trim($data['explanation']) : null;
 
                 if (empty($questionText)) {
                     continue;
                 }
+                if (isset($questionsMap[$questionText])) {
+                    $currentQuestion = $questionsMap[$questionText];
+                } else {
+                    $currentQuestion = $this->quizQuestionRepository->findOneBy([
+                        'text' => $questionText,
+                        'quiz' => $quiz
+                    ]);
 
-                $currentQuestion = $this->quizQuestionRepository->findOneBy([
-                    'text' => $questionText,
-                    'quiz' => $quiz
-                ]);
+                    if (null == $currentQuestion) {
+                        $currentQuestion = new QuizQuestion();
+                        $currentQuestion->setText($questionText);
+                        $currentQuestion->setQuiz($quiz);
+                        $currentQuestion->setActive(true);
 
-                if (null == $currentQuestion) {
-                    $currentQuestion = new QuizQuestion();
-                    $currentQuestion->setText($questionText);
-                    $currentQuestion->setQuiz($quiz);
-                    $currentQuestion->setActive(true);
+                        $this->em->persist($currentQuestion);
+                        $questionsMap[$questionText] = $currentQuestion;
+                        $totalQuestions++;
+                    }
 
-                    $this->em->persist($currentQuestion);
                     $questionsMap[$questionText] = $currentQuestion;
-                    $totalQuestions++;
                 }
-
-                $questionsMap[$questionText] = $currentQuestion;
-
                 $answer = null;
                 foreach ($currentQuestion->getAnswers() as $qa) {
                     if ($qa->getText() === $answerText) {
@@ -208,6 +211,7 @@ class ImportQuestionsCommand extends Command
                     $totalAnswers++;
                 }
                 $answer->setValid($isCorrect);
+                $answer->setExplanation($explanation);
                 $this->em->persist($answer);
             }
 
