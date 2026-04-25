@@ -47,6 +47,7 @@ class QuizTestController extends AbstractController
                     'id' => $answer->getId(),
                     'text' => $answer->getText(),
                     'correct' => $answer->isValid(),
+                    'explanation' => $answer->getExplanation(),
                 ];
             }
 

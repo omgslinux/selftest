@@ -157,6 +157,9 @@ class SecurityController extends AbstractController
             $quizzesData = array_filter($quizzesData, fn($item) => !$item['completed']);
         }
 
+        $totalQuizzes = count($quizzesData);
+        $totalQuestions = array_sum(array_column($quizzesData, 'questionCount'));
+
         return $this->render('security/home.html.twig', [
             'quizzesData' => $quizzesData,
             'categories' => $categories,
@@ -164,6 +167,8 @@ class SecurityController extends AbstractController
             'selectedCategory' => $categoryId,
             'selectedLevel' => $levelId,
             'selectedStatus' => $status,
+            'totalQuizzes' => $totalQuizzes,
+            'totalQuestions' => $totalQuestions,
         ]);
     }
 }

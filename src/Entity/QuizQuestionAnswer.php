@@ -29,6 +29,9 @@ class QuizQuestionAnswer
     #[ORM\Column(nullable: true)]
     private ?bool $valid = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $explanation = null;
+
     public function __construct()
     {
     }
@@ -70,6 +73,18 @@ class QuizQuestionAnswer
     public function setValid(?bool $valid): static
     {
         $this->valid = $valid;
+
+        return $this;
+    }
+
+    public function getExplanation(): ?string
+    {
+        return $this->explanation;
+    }
+
+    public function setExplanation(?string $explanation): static
+    {
+        $this->explanation = $explanation;
 
         return $this;
     }

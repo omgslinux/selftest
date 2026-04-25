@@ -46,6 +46,11 @@
                                         <span class="badge bg-success ms-2">Correcta</span>
                                     {% endif %}
                                 {% endif %}
+                                {% if isCorrectAnswer and answer.explanation is defined and answer.explanation %}
+                                    <div class="mt-2 ps-4 text-muted small">
+                                        <i class="fas fa-info-circle me-1"></i>{{ answer.explanation }}
+                                    </div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
