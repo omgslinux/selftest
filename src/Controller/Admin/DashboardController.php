@@ -19,15 +19,13 @@ class DashboardController extends AbstractDashboardController
 {
     public function index(): Response
     {
-        return $this->redirectToRoute('admin_category_index');
+        return $this->render('admin/dashboard.html.twig');
     }
 
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Selftest')
-            ->setTranslationDomain('EasyAdminBundle')
-            ->setLocales(['es']);
+            ->setTitle('Selftest');
     }
 
     public function configureMenuItems(): array

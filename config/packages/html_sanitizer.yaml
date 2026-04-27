@@ -1,24 +1,37 @@
 # Configuration for HTML Sanitizer
 # See https://symfony.com/doc/current/html_sanitizer.html
 
- Symfony\HtmlSanitizer:
-    sanitizer:
-        default:
-            allow_safe_elements:
-                - h1, h2, h3, h4, h5, h6
-                - p, br, hr
-                - ul, ol, li
-                - strong, b, em, i, u
-                - code, pre
-                - a
-                - img
-                - table, thead, tbody, tr, th, td
-            allow_attributes:
-                href:
-                    - a
-                src:
-                    - img
-                alt:
-                    - img
-                class:
-                    - '*'
+framework:
+    html_sanitizer:
+        sanitizers:
+            default:
+                allow_elements:
+                    h1: '*'
+                    h2: '*'
+                    h3: '*'
+                    h4: '*'
+                    h5: '*'
+                    h6: '*'
+                    p: '*'
+                    br: []
+                    hr: []
+                    ul: '*'
+                    ol: '*'
+                    li: '*'
+                    strong: '*'
+                    b: '*'
+                    em: '*'
+                    i: '*'
+                    u: '*'
+                    code: '*'
+                    pre: '*'
+                    a: '*'
+                    img: '*'
+                    table: '*'
+                    thead: '*'
+                    tbody: '*'
+                    tr: '*'
+                    th: '*'
+                    td: '*'
+                    div: '*'
+                    span: '*'

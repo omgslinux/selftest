@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Bienvenido al panel de administración</h1>
+    <p class="lead">Selecciona una opción del menú para comenzar.</p>
+    
+    <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+            <a href="{{ path('admin_category_index') }}" class="text-decoration-none">
+                <div class="card border-primary h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-folder fa-3x text-primary mb-3"></i>
+                        <h5>Categorías</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a href="{{ path('admin_topic_index') }}" class="text-decoration-none">
+                <div class="card border-success h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tags fa-3x text-success mb-3"></i>
+                        <h5>Temas</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a href="{{ path('admin_quiz_index') }}" class="text-decoration-none">
+                <div class="card border-warning h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clipboard-list fa-3x text-warning mb-3"></i>
+                        <h5>Cuestionarios</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a href="{{ path('admin_quiz_question_index') }}" class="text-decoration-none">
+                <div class="card border-info h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-question-circle fa-3x text-info mb-3"></i>
+                        <h5>Preguntas</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a href="{{ path('admin_import') }}" class="text-decoration-none">
+                <div class="card border-secondary h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-upload fa-3x text-secondary mb-3"></i>
+                        <h5>Importar</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a href="{{ path('app_home') }}" class="text-decoration-none">
+                <div class="card border-dark h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-brain fa-3x text-dark mb-3"></i>
+                        <h5>Ir a Tests</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

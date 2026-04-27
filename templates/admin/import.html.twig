@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Importar Preguntas{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Importar Preguntas</h1>
+    
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    
+    {% if result %}
+        <div class="alert alert-success">
+            <i class="fas fa-check"></i> Importación completada:
+            <ul class="mb-0">
+                <li>{{ result.categories }} categorías</li>
+                <li>{{ result.topics }} temas</li>
+                <li>{{ result.quizzes }} quizzes</li>
+                <li>{{ result.questions }} preguntas</li>
+                <li>{{ result.answers }} respuestas</li>
+            </ul>
+        </div>
+    {% endif %}
+    
+    <form id="import-form" method="POST" action="{{ path('admin_import') }}?_t={{ 'now'|date('U') }}" enctype="multipart/form-data" class="mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="file" class="form-label">Archivo JSON o CSV</label>
+                    <input type="file" name="file" id="file" class="form-control" accept=".json,.csv" required>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input type="checkbox" name="replace" id="replace" class="form-check-input">
+                        <label for="replace" class="form-check-label">Reemplazar preguntas existentes</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Importar
+                </button>
+            </div>
+        </div>
+    </form>
+    
+    <div class="mt-4">
+        <h5>Formatos aceptados:</h5>
+        <div class="card">
+            <div class="card-body">
+                <h6>JSON:</h6>
+                <pre class="bg-light p-3"><code>{ "category": "AZ-900", "name": "Introduccion", "quizzes": [ { "quiz": "Test 1", "level": 1, "questions": [ { "text": "¿Qué es Azure?", "answers": [ {"text": "Cloud", "correct": true}, {"text": "On-premise", "correct": false} ] } ] } ] }</code></pre>
+                
+                <h6 class="mt-3">CSV:</h6>
+                <pre class="bg-light p-3"><code>category;topic;quiz;level;question;answer;correct;explanation</code></pre>
+                <p class="text-muted small">El delimitador padrão es punto y coma (;)</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <a href="{{ path('admin') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver al panel
+        </a>
+    </div>
+</div>
+{% endblock %}
