@@ -1,0 +1,21 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  APP_NAME: selftest
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deployment on Proxmox
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.ANSIBLE_GITHUB_SERVER }}
+          username: github-runner
+          key: ${{ secrets.ANSIBLE_GITHUB }}
+          script: sudo ${{ vars.ANSIBLE_GITHUB_WRAPPER }} ${{ env.APP_NAME }}
