@@ -17,6 +17,6 @@ jobs:
         with:
           host: ${{ secrets.ANSIBLE_GITHUB_SERVER }}
           port: ${{ secrets.ANSIBLE_GITHUB_PORT }}
-          username: github-runner
+          username: ansible
           key: ${{ secrets.ANSIBLE_GITHUB }}
           script: ${{ vars.ANSIBLE_GITHUB_WRAPPER }} ${{ env.APP_NAME }}
