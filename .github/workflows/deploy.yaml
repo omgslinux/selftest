@@ -16,6 +16,7 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.ANSIBLE_GITHUB_SERVER }}
+          port: ${{ secrets.ANSIBLE_GITHUB_PORT }}
           username: github-runner
           key: ${{ secrets.ANSIBLE_GITHUB }}
           script: sudo ${{ vars.ANSIBLE_GITHUB_WRAPPER }} ${{ env.APP_NAME }}
