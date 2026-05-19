@@ -6,7 +6,7 @@ Plataforma de cuestionarios interactivos para la preparación de exámenes de ce
 
 - Sistema de autenticación y autorización con roles (Admin, Profesor, Usuario)
 - Cuestionarios con preguntas de opción múltiple
-- Importación de preguntas desde archivos CSV
+- Importación/exportación de preguntas desde archivos JSON
 - Panel de administración con EasyAdmin
 - Filtrado de cuestionarios por categoría, nivel y estado
 - Visualización de resultados con puntuación porcentual
@@ -34,7 +34,7 @@ cp .env .env.local
 php bin/console doctrine:migrations:migrate
 
 # (Opcional) Importar preguntas de ejemplo
-php bin/console app:import-questions var/Quiz/AZ-900/
+php bin/console app:import-json var/Quiz/AZ-900/
 ```
 
 ## Configuración
@@ -65,26 +65,51 @@ El sistema:
 - **Profesor** - Acceso al panel de administración y gestión de contenido
 - **Usuario** - Puede realizar tests y ver sus propios resultados
 
-### Importar preguntas
+### Importar/Exportar preguntas
+
+Los archivos de preguntas están en formato JSON en el directorio `var/Quiz/`.
 
 ```bash
-# Un archivo CSV
-php bin/console app:import-questions archivo.csv
+# Importar un archivo JSON
+php bin/console app:import-json var/Quiz/AZ-900/AZ-900_Introduccion.json
+
+# Importar todos los archivos de un directorio
+php bin/console app:import-json var/Quiz/AZ-900/
 
 # Con reemplazo de preguntas existentes
-php bin/console app:import-questions archivo.csv --replace
-
-# Directorio completo
-php bin/console app:import-questions var/Quiz/AZ-900/
+php bin/console app:import-json var/Quiz/AZ-900/ --replace
 ```
 
-#### Formato CSV
+#### Formato JSON
 
-```csv
-question;answer;correct
-¿Qué es Azure?;Servicio de nube de Microsoft;true
-¿Qué es Azure?;Un sistema operativo de escritorio;false
+```json
+{
+    "category": "AZ-900",
+    "name": "Introduccion",
+    "quizzes": [
+        {
+            "quiz": "Conceptos Básicos",
+            "level": 1,
+            "questions": [
+                {
+                    "text": "¿Qué es Azure?",
+                    "intro": "<p>Cloud de Microsoft</p>",
+                    "answers": [
+                        { "text": "Servicio cloud", "correct": true },
+                        { "text": "Sistema operativo", "correct": false }
+                    ]
+                }
+            ]
+        }
+    ]
+}
 ```
+
+> **Campo `intro`**: Es opcional. Permite incluir HTML antes de la pregunta para ilustrar el contexto de forma gráfica (tablas, código, alertas, etc.). El contenido se sanitiza antes de mostrarse, permitiendo usar clases de Bootstrap 5 (por ejemplo: `<table class="table table-striped">`, `<pre>`, `<div class="alert">`, etc.).
+
+#### Exportar desde la aplicación
+
+En la página principal, al seleccionar un topic específico, aparece el botón "Exportar" que descarga el archivo JSON con todas las preguntas de ese topic.
 
 ### Comandos adicionales
 
